@@ -1,0 +1,1 @@
+{"name":"Local: 18","url":"e:\\LeetCode\\Problem of the day\\Jan'23\\18.cpp","tests":[{"id":1674015431999,"input":"3\n4\n1 -2 3 -2\n3\n5 -3 5\n3\n-3 -2 -3","output":"3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\LeetCode\\Problem of the day\\Jan'23\\18.cpp","group":"local","local":true}

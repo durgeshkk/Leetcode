@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "array": "cpp",
+        "bitset": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "utility": "cpp",
+        "valarray": "cpp",
+        "vector": "cpp",
+        "iostream": "cpp",
+        "map": "cpp",
+        "unordered_map": "cpp",
+        "cstdint": "cpp"
+    }
+}
