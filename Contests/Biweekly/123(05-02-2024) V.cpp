@@ -166,7 +166,7 @@ long long maximumSubarraySum(vector<int>& v, int k) {
     return ans;
 }
 
-int numberOfPairs(vector<vector<int>>& v) {
+int numberOfPairs2(vector<vector<int>>& v) {
     sort(all(v),[](const vector<int> &p,const vector<int> &p1){
         if(p[0] == p1[0]){
             return p1[1]<p[1];
@@ -191,7 +191,7 @@ int numberOfPairs(vector<vector<int>>& v) {
 }
 
 void solve(){
-    ll n;cin>>>n;
+    ll n;cin>>n;
     vector<ll> v(n);enter(v);
 
 }
