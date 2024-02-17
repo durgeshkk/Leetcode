@@ -1,121 +1,87 @@
-#include <iostream>
-#include <vector>
-#include <set>
-
+/*
+Once in a LifeTime,
+Will never let you Down!!
+*/
+#include <bits/stdc++.h>
+#include<iomanip>
+#include <deque>
+#include <bitset>
+#include <cstdint>
+//#include <ext/pb_ds/assoc_container.hpp> // Common file
+//#include <ext/pb_ds/tree_policy.hpp>
+//using namespace __gnu_pbds;
+//#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
+#define ll long long int
+#define all(a) a.begin(),a.end()
+#define enter(a) for(ll i=0;i<a.size();i++) cin>>a[i];
+#define forj(n) for (ll j = 0; j < n; j++)
+#define show(a) for(auto e: a) cout<<e<<" "; cout<<endl;
 using namespace std;
+ll mod = (ll)(1e9+7);
 
 class Solution {
 public:
-    class Node {
-    public:
-        Node* one;
-        Node* zero;
-        bool deleted;  // New field to mark deleted nodes
+typedef pair<int,int> pii;
+vector<vector<ll>> adj,dk;
+map<ll,ll> mp;
+#define V 26
+const int modulo = 1924134973;
+int getHashValue(string s) {
+    long long sum = 0;
+    for (auto character : s) {
+        sum = (sum * 26 + character - 'a' + 1) % modulo;
+    }
+    return sum;
+}
 
-        Node() : one(nullptr), zero(nullptr), deleted(false) {}
-    };
+ll minDistance(ll dist[], bool sptSet[]){
+    ll min = 1e10, min_index;
+ 
+    for (ll v = 0; v < V; v++)
+        if (sptSet[v] == false && dist[v] <= min)
+            min = dist[v], min_index = v;
+ 
+    return min_index;
+}
 
-    class Trie {
-        Node* root;
+void dijkstra(ll src){
+    ll dist[V]; 
+    bool sptSet[V];
+    for (ll i = 0; i < V; i++)
+        dist[i] = 1e10, sptSet[i] = false;
+ 
+    dist[src] = 0;
+ 
+    for (ll count = 0; count < V - 1; count++) {
+        ll u = minDistance(dist, sptSet);
+        sptSet[u] = true;
+ 
+        for (ll v = 0; v < V; v++)
+            if (!sptSet[v] && adj[u][v] && dist[u] != 1e10 && ((dist[u] + adj[u][v]) < dist[v]))
+                dist[v] = dist[u] + adj[u][v];
+    }
 
-    public:
-        Trie() : root(new Node()) {}
+    forj(V){
+        dk[src][j] = dist[j];
+    }
+}
 
-        void insert(int n) {
-            Node* temp = root;
-            for (int i = 21; i >= 0; i--) {
-                int bit = (n >> i) & 1;
-                if (bit == 0) {
-                    if (temp->zero == nullptr) {
-                        temp->zero = new Node();
-                    }
-                    temp = temp->zero;
-                } else {
-                    if (temp->one == nullptr) {
-                        temp->one = new Node();
-                    }
-                    temp = temp->one;
-                }
-            }
-        }
+long long minimumCost(string s, string t, vector<char>& o, vector<char>& c, vector<int>& cost) {
+    ll n = o.size();mp.clear();
+    adj.assign(27,vector<ll> (27,1e10));dk.assign(27,vector<ll> (27,1e10));
+    forj(n){
+        adj[o[j]-'a'][c[j]-'a'] = min(adj[o[j]-'a'][c[j]-'a'],(ll)cost[j]);
+    }
 
-        void deleteNode(int n) {
-            deleteNodeHelper(root, n, 21);
-        }
+    forj(26){
+        dijkstra(j);
+    }
 
-        void deleteNodeHelper(Node* node, int n, int depth) {
-            if (node == nullptr) {
-                return;
-            }
-
-            if (depth == -1) {
-                // Mark the leaf node as deleted instead of deleting it.
-                node->deleted = true;
-                return;
-            }
-
-            int bit = (n >> depth) & 1;
-
-            if (bit == 0) {
-                deleteNodeHelper(node->zero, n, depth - 1);
-            } else {
-                deleteNodeHelper(node->one, n, depth - 1);
-            }
-        }
-
-        int maxXorHelper(int value) {
-            Node* temp = root;
-            int currentAns = 0;
-
-            for (int i = 21; i >= 0; i--) {
-                int bit = (value >> i) & 1;
-                if (bit == 0) {
-                    if (temp->one && !temp->one->deleted) {
-                        temp = temp->one;
-                        currentAns += (1 << i);
-                    } else {
-                        temp = temp->zero;
-                    }
-                } else {
-                    if (temp->zero && !temp->zero->deleted) {
-                        temp = temp->zero;
-                        currentAns += (1 << i);
-                    } else {
-                        temp = temp->one;
-                    }
-                }
-            }
-            return currentAns;
-        }
-
-        int maxXor(vector<int> arr, int n) {
-            int maxVal = 0;
-            int l = 0;
-            insert(arr[0]);
-            for (int i = 1; i < n; i++) {
-                while ((l < i) && (2 * arr[l] < arr[i])) {
-                    deleteNode(arr[l]);
-                    ++l;
-                }
-
-                maxVal = max(maxXorHelper(arr[i]), maxVal);
-                insert(arr[i]);
-            }
-            return maxVal;
-        }
-
-        ~Trie() {
-            // Clean up the trie when the object is destroyed.
-            deleteTrie(root);
-        }
-
-        void deleteTrie(Node* node) {
-            if (node) {
-                deleteTrie(node->zero);
-                deleteTrie(node->one);
-                delete node;
-            }
-        }
-    };
+    ll ans = 0,f = 1;
+    forj(s.size()){
+        if(dk[s[j]-'a'][t[j]-'a'] == 1e10){f = 0;break;}
+        ans += dk[s[j]-'a'][t[j]-'a'];
+    }
+    return ans;
+}
 };
-

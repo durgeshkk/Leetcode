@@ -1,45 +1,109 @@
-#include <iostream>
-#include <vector>
-
+/*
+Once in a LifeTime,
+Will never let you Down!!
+*/
+#include <bits/stdc++.h>
+#include<iomanip>
+#include <deque>
+#include <bitset>
+#include <cstdint>
+//#include <ext/pb_ds/assoc_container.hpp> // Common file
+//#include <ext/pb_ds/tree_policy.hpp>
+//using namespace __gnu_pbds;
+//#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
+#define ll long long int
+#define all(a) a.begin(),a.end()
+#define enter(a) for(ll i=0;i<a.size();i++) cin>>a[i];
+#define forj(n) for (ll j = 0; j < n; j++)
+#define show(a) for(auto e: a) cout<<e<<" "; cout<<endl;
 using namespace std;
+ll mod = (ll)(1e9+7);
 
-const int MOD = 1e9 + 7;
-
-// Function to calculate the number of good strings
-int countGoodStrings(int n) {
-    // Initialize a 2D array to store the counts
-    vector<vector<int>> dp(n + 1, vector<int>(4, 0));
-
-    // Base case: empty string
-    for (int j = 0; j < 4; ++j) {
-        dp[0][j] = 1;
+class Solution {
+public:
+    int maxSelectedElements(vector<int>& v) {
+        map<ll,ll> mp;
+    for(auto it:v){mp[it]++;}
+        
+    
+    vector<ll> tmp;
+    for(auto it:mp){
+        tmp.push_back(it.first);
     }
 
-    // Dynamic programming to fill the array
-    for (int i = 1; i <= n; ++i) {
-        for (int j = 0; j < 4; ++j) {
-            // Update the count based on the possible transitions
-            for (int k = 0; k < 4; ++k) {
-                if (j != k) {
-                    dp[i][j] = (dp[i][j] + dp[i - 1][k]) % MOD;
-                }
-            }
+    vector<vector<ll>> grps;
+    vector<ll> dk;dk.push_back(tmp[0]);
+    for(ll j = 1;j<tmp.size();++j){
+        if(tmp[j] == 1+tmp[j-1]){
+            dk.push_back(tmp[j]);
+        }else{
+            grps.push_back(dk);
+            dk.clear();dk.push_back(tmp[j]);
         }
     }
 
-    // Sum the counts for all possible endings with "leet"
-    int result = 0;
-    for (int j = 0; j < 4; ++j) {
-        result = (result + dp[n - 1][j]) % MOD;
+    if(!dk.empty()){
+        grps.push_back(dk);
     }
 
-    return result;
-}
+    ll ans = 0;
+    vector<pair<ll,ll>> mv,ak;
+    for(auto it:grps){
+        vector<ll> dk = it;
+        ll freq = 0,sa = dk.size();
+        for(auto x:dk){
+            freq += min(2ll,mp[x]);
+        }
+        if(freq > dk.size()){
+            mv.push_back({dk[0],1+dk[dk.size()-1]});
+            ans = max(ans,sa+1);
+        }else{
+            mv.push_back({dk[0],dk[dk.size()-1]});
+            ans = max(ans,sa);
+        }
+    }
 
-int main() {
-    int n = 4; // You can change the value of n
-    int result = countGoodStrings(n);
-    cout << result << endl;
-
-    return 0;
-}
+        for(auto it:mv){
+            cout<<it.first<<" "<<it.second<<endl;
+        }
+        
+        ak.push_back(mv[0]);
+     for(ll j = 1;j<mv.size();++j)   {
+         auto p = ak[ak.size()-1];
+         if(p.second+1==mv[j].first){
+             ak.pop_back();
+             ak.push_back({p.first,mv[j].second});
+         }else{
+             ak.push_back(mv[j]);
+         }
+     }
+         mv.clear();
+        for(auto it:ak){
+            mv.push_back(it);
+        }
+        for(auto it:mv){
+            cout<<it.first<<" "<<it.second<<endl;
+        }
+        
+        
+        vector<ll> till;
+    till.push_back(mv[0].second-mv[0].first+1);
+    for(ll i = 1;i<mv.size();++i){
+        ll sa = 0;
+        auto p = mv[i-1],p1 = mv[i];
+        if(p1.first == p.second+2){
+            till.push_back(mv[i].second-mv[i].first+2+mv[i-1].second-mv[i-1].first);
+        }else if(p1.first == p.second+1){
+            till.push_back(mv[i].second-mv[i].first+1+till[till.size()-1]);
+        }else{
+            till.push_back(mv[i].second-mv[i].first+1);
+        }
+    }
+        show(till);
+    for(auto it:till){
+        ans = max(ans,it);
+    }
+        
+    return ans;
+    }
+};

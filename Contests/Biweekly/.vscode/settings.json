@@ -10,6 +10,12 @@
         "iostream": "cpp",
         "map": "cpp",
         "unordered_map": "cpp",
-        "cstdint": "cpp"
+        "cstdint": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_set": "cpp",
+        "string_view": "cpp"
     }
 }
