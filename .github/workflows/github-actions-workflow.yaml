@@ -1,0 +1,60 @@
+name: Github Actions Demo
+on: [push, pull_request]
+
+jobs: 
+  First-Job-Example:
+    name: Exploring First Job
+    runs-on: ubuntu-latest
+    steps:
+      # Display the event that triggered the workflow
+      - run: echo "The job was triggered by a ${{ github.event_name }} event."
+      
+      # Runner information
+      - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub"
+      
+      # Information about the repository and branch copied to the Runner
+      - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      
+      # Use Action located in https://github.com/actions
+      - name: Check out repository code
+        uses: actions/checkout@v2  
+      
+      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+      
+      - run: echo "Your repository has been copied to the path ${{ github.workspace }} on the runner."
+      
+      - run: echo "The workflow is now ready to test your code on the runner."
+      
+      - name: conditional step when event name is pull request {Conditional Logic}
+        # We can use context to check conditions
+        if: ${{ github.event_name == 'pull_request' }} 
+        run: echo "This event is a pull request"
+      
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      
+    # This is also from Actions repo provided by Github, this will install dotnet runtime we 
+    # specify onto this Runner; telling runner to install dotnet version : 3.{latest}
+      - name: Setup dotnet on runner
+        uses: actions/setup-dotnet@v1
+        with: # With Action we can pass parameters using 'with' keyword
+          dotnet-version: '3.x'
+      
+      - name: Display dotnet version installed
+        run: dotnet --version
+      
+      - run: echo "The preinstalled tools are located here on the runner ${{ runner.tool_cache }}."
+      
+      - name: List files in tool cache
+        run: |
+          ls ${{ runner.tool_cache }}
+      
+      - run: echo "This job's status is ${{ job.status }}."
+      
+#   Second-Job:
+#     name: The second job running on another runner
+#     runs-on: windows-latest
+#     needs: Example-Actions-Job
+#     steps:
+#       - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub."
