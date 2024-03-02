@@ -34,7 +34,7 @@ jobs:
         mkdir ${{ env.DURGESH }}
         ls
         echo "m3vora and durgesh_0409"
-        mkdir ${{ env.MV }}
+        mkdir $MV
         mkdir $dk
         ls
         echo "Build Config - ${{ env.dk }}"
