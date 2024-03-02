@@ -5,7 +5,7 @@ on:
     types: [run_my_workflow]
 
 jobs:
-  Example-Actions-Job:
+  Example-Actions-Job:  
     name: Hitted Rest Endpoint
     runs-on: ubuntu-latest
     steps:

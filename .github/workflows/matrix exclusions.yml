@@ -1,0 +1,39 @@
+name: Matrix Testing
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+# To use the below keys we use expression syntax & reference the key name of the matrix context.
+# Below will create 4 Jobs !!
+    runs-on: ${{ matrix.os }}
+
+    continue-on-error: true # This will ask runner to continue workflow even if any of Job fails
+    
+    strategy: # We define a Strategy & then a Matrix 
+      matrix: # Within Matrix we can name the Key or Vars we want to use
+        os: [windows-latest, ubuntu-latest] # Key: value(Value must match real OS Names)
+        dot-net-version: [3.1.x, 5.0.x] # Versions we need
+        exclude: # We are asking to exclude below Job = 4-1 = 3 total Jobs
+          - os: ubuntu-latest
+            dot-net-version: 3.1.x
+            
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dot-net-version }}
+    
+    - name: print os and version info
+      run: echo "runner os ${{ runner.os }}, dotnet ${{ matrix.dot-net-version }}"
+      
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore
+

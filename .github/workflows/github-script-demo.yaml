@@ -12,6 +12,7 @@ jobs:
         id: create-comment # This is to get the access to the Output vars of the console log, e.g Get Results
         with:
           # context below is an object containing info abt workflow run
+          # issues is use to create an issue in Github
           script: | # This action allows to pass Javascript in scripts parameter.
             console.log(context); 
             
