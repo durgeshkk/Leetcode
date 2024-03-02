@@ -1,0 +1,43 @@
+name: Try Contexts for Env Variables
+on: 
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'DEV/UAT/PROD'
+        required: false
+        default: 'DEV'
+        type: choice
+        options:
+        - DEV
+        - UAT
+        - PROD
+
+env:
+  BUILD_CONFIG: Release
+
+jobs:
+  Access-Variables-Job:
+    name: Access Variables on Shell and Workflow
+    runs-on: ubuntu-latest
+    env:
+      DURGESH: golu_0409
+
+    steps:
+    - name: Lets Test 
+      run: | 
+        echo "The job was triggered by a ${{ github.event_name }} event."
+        echo "Build Config - $BUILD_CONFIG"
+        echo "$DURGESH"
+        echo "$MV"
+        echo "Environment $dk"
+        mkdir ${{ env.BUILD_CONFIG }}
+        mkdir ${{ env.DURGESH }}
+        mkdir ${{ env.MV }}
+        mkdir ${{ env.dk }}
+        ls
+      env: 
+        MV: m3vora
+        dk: ${{ inputs.environment }}
+
+
+    

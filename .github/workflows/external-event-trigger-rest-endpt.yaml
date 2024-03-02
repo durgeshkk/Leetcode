@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Payload Field is ${{ github.event.client_payload.mydata }}"
+      - run: echo "Payload Field is ${{ github.event.client_payload.Hero }}"
+      - run: echo "Payload Field is ${{ github.event.client_payload.Dream }}"
       - run: echo "Payload Field is ${{ github.event.client_payload }}"
       - run: echo "The Job was triggered by a ${{ github.event_name }} event."
       
