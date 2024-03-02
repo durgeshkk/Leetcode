@@ -37,6 +37,8 @@ jobs:
         mkdir ${{ env.MV }}
         mkdir ${{ env.dk }}
         ls
+        echo "Build Config - ${{ env.dk }}"
+        echo "Build Config - ${{ env.MV }}"
       env: 
         MV: m3vora
         dk: ${{ inputs.environment }}
