@@ -16,7 +16,7 @@ jobs:
     steps:
     
       - name: checkout code if running on master branch
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }} # If yes then run this steps else fail
         uses: actions/checkout@v2
         
       - name: YES was passed as workflow input
@@ -29,7 +29,7 @@ jobs:
       
       - name: Step that can be failed
         env:
-          FAIL_STEP: ${{ github.event.inputs.failstep == 'yes' }}
+          FAIL_STEP: ${{ github.event.inputs.failstep == 'yes' }} # Get the I/p value of the workflow & set the FAIL_STEP to false/true
         run:  |
           echo "This statement runs whether step exits 0 or 1"
           if [[ $FAIL_STEP == true ]]
@@ -40,25 +40,23 @@ jobs:
       - name: Step in workflow
         run: echo "Another step in the workflow" 
 
-      - name: This step only runs if there's a previous failure
-        if: failure()
+      - name: This step only runs if there's any previous failure
+        if: failure() # or {{ failure() }} 
         run: echo "There has been a failure.  Perhaps send a notification." 
 
       - name: Step in workflow
         run: echo "Another step in the workflow" 
           
-      - name: Step that always runs
-        if: always()
+      - name: Step that always runs and returns True even when cancelled
+        if: always() # or {{ always() }} 
         run:  echo "This step runs regardless of success or failure." 
           
       - name: Step that only runs on success of all steps
-        if: success()
+        if: success() # or {{ success() }} 
         run:  echo "This step only runs when no previous steps have failed." 
 
-  second-job:
-  
+  second-job: # If first Job Fails this won't run!
     runs-on: ubuntu-latest
-    
     needs: first-job
     if: always()
     steps:

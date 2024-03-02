@@ -27,3 +27,7 @@ jobs:
     - name: Lets Test Referring to Main Branch 2
       if: ${{ github.ref }} == 'refs/heads/main'
       run: echo "Durgesh K Loves $m3vora"
+
+    - name: Lets Test Referring to Main Branch 3
+      run: echo "Durgesh K Loves $m3vora"
+      if: github.ref == 'refs/heads/main'

@@ -42,6 +42,3 @@ jobs:
       env: 
         MV: m3vora
         dk: ${{ inputs.environment }}
-
-
-    
