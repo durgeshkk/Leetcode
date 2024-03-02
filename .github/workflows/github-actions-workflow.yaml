@@ -53,14 +53,14 @@ jobs:
       - run: echo "This job's status is ${{ job.status }}."
       
   Second-Job-Example:
-    name: The second job running on another runner
+    name: Second Job
     runs-on: windows-latest
     needs: First-Job-Example
     steps:
       - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub."
 
   Third-Job-Example:
-    name: The second job running on another runner
+    name: Third Job
     runs-on: ubuntu-latest
     steps:
       - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub."

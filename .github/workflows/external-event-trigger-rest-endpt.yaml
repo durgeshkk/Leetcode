@@ -1,0 +1,14 @@
+name: Call Github Workflow from Rest Endpoint
+
+on:
+  repository_dispatch:
+    types: [run_my_workflow]
+
+jobs:
+  Example-Actions-Job:
+    name: Hitted Rest Endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Payload Field is ${{ github.event.client_payload.mydata }}"
+      - run: echo "The Job was triggered by a ${{ github.event_name }} event."
+      
