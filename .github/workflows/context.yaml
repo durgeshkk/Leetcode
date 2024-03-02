@@ -32,9 +32,13 @@ jobs:
         echo "Environment $dk"
         mkdir ${{ env.BUILD_CONFIG }}
         mkdir ${{ env.DURGESH }}
-        mkdir ${{ env.MV }}
-        mkdir ${{ env.dk }}
         ls
+        echo "m3vora and durgesh_0409"
+        mkdir $MV
+        mkdir $dk
+        ls
+        echo "Build Config - ${{ env.dk }}"
+        echo "Build Config - ${{ env.MV }}"
       env: 
         MV: m3vora
         dk: ${{ inputs.environment }}
