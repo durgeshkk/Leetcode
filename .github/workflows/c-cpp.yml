@@ -1,23 +1,50 @@
-name: C/C++ CI
+name: C/C++ Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: 
+      - main
+      - develop
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - main
+      - develop
+  workflow_dispatch:
 
 jobs:
-  build:
-
+  Build:
+    name: Leetcode Build Check
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: ${{ github.repository }} is cloned to the Runner
+      run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+
+    - name: List files in the repository
+      run: | 
+        ls ${{ github.workspace }}
+
+    - name: Set up C++ Environment
+      run: sudo apt-get install gcc g++ make -y
+
+    - name: Create a Folder to store all the cpp Files compiled Results
+      run: |
+        cd leetcode
+        ls
+
+    - name: Build C++ Files
+    # find -name "*.${{ env.file_extention }}" => Find C++ Files
+      run: |
+        g++ -o out -I ./leetcode *.cpp leetcode/*.cpp
+      env:
+        file_extention: cpp
+
+    - name: Upload to Artifactory
+      uses: actions/upload-artifact@v4
+      with:
+        name: leetcode-artifact
+        path: leetcode
+        if-no-files-found: warn
