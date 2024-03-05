@@ -1,4 +1,4 @@
-name: C/C++ Build
+name: C/C++ CI Build
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
 
     - name: Create a Folder to store all the cpp Files compiled Results
       run: |
-        cd leetcode
+        mkdir leetcode
         ls
 
     - name: Build C++ Files
