@@ -40,6 +40,8 @@ jobs:
 
     - name: Find and Compile C++ files
       run: |
+        cd 2024_03_06_With_Workflow
+        ls
         files=$(find -name "*.${{ env.file_extension }}")
         for file in $files; do
           g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
