@@ -39,12 +39,18 @@ jobs:
         ls
 
     - name: Find and Compile C++ files
+      # g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
       run: |
         cd 2024_03_06_With_Workflow
         ls
         files=$(find -name "*.cpp")
         for file in $files; do
-          g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
+          if ! g++ -c "$file"; then
+            echo "Compilation failed for $file"
+            gh auth login --with-token "${{ secrets.GITHUB_TOKEN }}"
+            gh issue create --title "Compilation Failure" --body "Compilation failed for $file"
+            exit 1;
+          fi
         done
         ls
       env:
