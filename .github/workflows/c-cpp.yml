@@ -44,7 +44,7 @@ jobs:
         ls
         files=$(find -name "*.cpp")
         for file in $files; do
-          g++ -c "$file" || { echo "Compilation failed for $file"; ${{ github.token }} issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
+          g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
         done
         ls
       env:
