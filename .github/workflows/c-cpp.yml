@@ -35,6 +35,7 @@ jobs:
     - name: Create a Folder to store all the cpp Files compiled Results
       run: |
         mkdir compiled_outputs
+        cd 2024_03_06_With_Workflow
         ls
 
     - name: Find and Compile C++ files
@@ -43,6 +44,7 @@ jobs:
         for file in $files; do
           g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
         done
+        ls
       env:
         file_extention: cpp
       
