@@ -17,6 +17,8 @@ jobs:
   Build:
     name: Leetcode Build Check
     runs-on: ubuntu-latest
+    env: 
+      compilation_failures: ''
 
     steps:
     - name: Checkout Repository
@@ -39,7 +41,12 @@ jobs:
         ls
 
     - name: Find and Compile C++ files
+      id: fail
       # g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
+      # echo "Compilation failed for $file"
+      # gh auth login --with-token "${{ secrets.GITHUB_TOKEN }}"
+      # gh issue create --title "Compilation Failure" --body "Compilation failed for $file"
+      # exit 1;
       run: |
         cd 2024_03_06_With_Workflow
         ls
@@ -47,15 +54,17 @@ jobs:
         for file in $files; do
           if ! g++ -c "$file"; then
             echo "Compilation failed for $file"
-            gh auth login --with-token "${{ secrets.GITHUB_TOKEN }}"
-            gh issue create --title "Compilation Failure" --body "Compilation failed for $file"
-            exit 1;
+            export compilation_failures="$compilation_failures $file"
           fi
         done
+        echo "::set-env name=compilation_failures::$compilation_failures"
         ls
       env:
         file_extention: cpp
-      
+
+    - name: Display Compilation Failures
+      run: |
+        echo "Compilation failures: ${{ env.compilation_failures }}"  
 
     # - name: Raise issue on compilation failure
     #   if: failure()
