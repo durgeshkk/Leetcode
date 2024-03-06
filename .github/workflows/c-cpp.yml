@@ -32,15 +32,15 @@ jobs:
     - name: Set up C++ Environment
       run: sudo apt-get install gcc g++ make -y
 
-    - name: Create a Folder to store all the cpp Files compiled Results
-      run: |
-        mkdir leetcoder
-        ls
+    # - name: Create a Folder to store all the cpp Files compiled Results
+    #   run: |
+    #     mkdir leetcoder
+    #     ls
 
     - name: Identify Newly Added Files
       id: identify-files
       run: |
-        newly_added_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^2024_03_06_With_Workflow/' | grep '\.cpp$' || true)
+        newly_added_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '^2024_03_06_With_Workflow/.*\.cpp$' || true)
         echo "::set-output name=newly_added_files::$newly_added_files"
 
     - name: Compile C++ files
