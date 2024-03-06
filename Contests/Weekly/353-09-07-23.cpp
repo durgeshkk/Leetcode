@@ -8,6 +8,7 @@
 //using namespace __gnu_pbds;
 //#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define ll long long int
+#define all(a) a.begin(),a.end()
 #define enter(a) for(ll i=0;i<a.size();i++) cin>>a[i];
 #define forj(n) for (ll j = 0; j < n; j++)
 #define show(a) for(auto e: a) cout<<e<<" "; cout<<endl;
@@ -31,42 +32,6 @@ void google(int t) {cout << "Case #" << t << ": ";}
 ll phin(ll n) {ll number = n; if (n % 2 == 0) {number /= 2; while (n % 2 == 0)n /= 2;} for (ll i = 3; i <= sqrt(n); i += 2) {if (n % i == 0) {while (n % i == 0)n /= i; number = (number / i * (i - 1));}} if (n > 1)number = (number / n * (n - 1)) ; return number;} //O(sqrt(N))
 */
  
-ll LCM(ll a,ll b){
-   ll ans = (a*b)/__gcd(a,b);
-   return ans;
-}
- 
-bool isPrime(int n){
-   if(n<2 || n%2==0 || n%3==0){
-       return false;
-   }
-   
-   for(int i=5; i*i <= n; i+=6){
-      if(n%i==0 || n%(i+2)==0){
-         return false;
-      }
-   }
-   return true;
-}
- 
-bool isPalindrome(string str)
-{
-    int low = 0;
-    int high = str.length() - 1;
-
-    while (low < high)
-    {
-        // if a mismatch happens
-        if (str[low] != str[high]) {
-            return false;
-        }
-
-        low++;
-        high--;
-    }
-
-    return true;
-}
 // Fxn call(for ((b/a)%mod)) :
 // ll c = (b*power(a,mod-2(prime num in power of a),mod))%mod;
 // Also for formula like nCr..
@@ -109,69 +74,7 @@ void createsieve(){
 }
  
  
-ll fact[100005];
-ll powfact[100005];
-void precomputefact(){
-    fact[0] = 1;
-    ll ans = 1;
-    for(ll i = 1;i<=100005;++i){
-         ans = (ans*i)%mod;
-         fact[i] = ans;
-         powfact[i] = power(fact[i],mod-2,mod);
-    }
-}
- 
-ll nCr(ll n,ll r){
-     ll at = powfact[r];
-     ll at2 = powfact[n-r];
-     return ((fact[n]*((at*at2)%mod))%mod);
-}
- 
 vector<ll> adj[100004];
- 
-void bfs(){
-    queue<pair<ll,ll>> q;
-    q.push({1,0});
- 
-    while(!q.empty()){
-        auto it = q.front();
-        q.pop();
- 
-        ll node = it.first;
-        ll par = it.second;
- 
-        cout<<node<<" ";
- 
-        for(auto it:adj[node]){
-            if(it != par){
-                q.push({it,node});
-            }
-        }
-    }
-}
- 
-ll height;
-ll subtree[100005];
-ll lev[100005];
-ll parent[200005];
- 
-void dfs(ll node, ll par, ll level=1){
-
-    cout<<node<<" ";
-    lev[node] = level;
-    height = max(height,level);
- 
-    ll sm = 0;
- 
-    parent[node] = par;
-    for(auto it:adj[node]){
-        if(it != par){
-            dfs(it,node,level+1);
-            sm += subtree[it];
-        }
-    }
-    subtree[node] = 1+sm;
-}
  
 void tree(){
     ll n;
@@ -183,6 +86,151 @@ void tree(){
     adj[v].push_back(u);
 }
  
+//  "A" : 65, "a" : 97  (-> |) (<- &(~))
+
+int maximumJumps(vector<int>& v, int x) {
+    ll n = v.size();
+    vector<ll> dp(n+1,0);
+    for(ll i = n-1;i>=0;--i){
+        for(ll j = i+1;j<n;++j){
+            ll diff = v[i]-v[j];
+            if((diff  <= x) and (diff >= -x)){
+                dp[i] = max(dp[i],dp[j]+1);
+            }
+        }
+    }
+
+    if(!dp[0]){return -1;}
+    return dp[0];
+}
+
+vector<ll> v,t;
+ll n;
+ll recur(ll idx,ll prev,ll start,ll mx){
+    if(idx == n){return 0;}
+
+    ll sa = 0;
+    // Or Continue
+    if(v[idx] >= prev){
+        sa = max(sa,recur(idx+1,v[idx],start,max(mx,idx-start+1))+1);
+    }else if(t[idx] >= prev){
+        sa = max(sa,recur(idx+1,t[idx],start,max(mx,idx-start+1))+1);
+    }else{
+        // Start new
+        sa = recur(idx+1,v[idx],idx,max(mx,1ll));
+    }
+    return mx;
+}
+
+ll recur(ll idx,ll mx,ll start,ll prev,ll len){
+    if(idx == n){return 0;}
+    
+    ll sa = recur(idx+1,mx,idx,v[idx],1);
+    if(v[idx] >= prev){
+        sa = max(idx-start+1,max(sa,recur(idx+1,mx,start,v[idx],len+1)));
+    }
+    if(t[idx] >= prev){
+        sa = max(sa,recur(idx+1,mx,start,v[idx],len+1));
+    }
+    return max(mx,sa);
+}
+
+/*
+n = len(nums)
+        dp = [-1] * n
+        dp[0] = 0
+    
+        for i in range(1, n):
+            for j in range(i):
+                if abs(nums[i] - nums[j]) <= target:
+                    dp[i] = max(dp[i], dp[j] + 1)
+        if dp[n-1]==0:
+            return -1
+    
+        return dp[n-1]
+*/
+
+/*
+int n = nums1.size();
+        vector<vector<int>> dp(n, vector<int>(2));
+        int maxLength = 0;
+
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = dp[i][1] = 1;
+
+            if (i > 0) {
+                if (nums1[i] >= nums1[i - 1])
+                    dp[i][0] = dp[i - 1][0] + 1;
+
+                if (nums1[i] >= nums2[i - 1])
+                    dp[i][0] = max(dp[i][0], dp[i - 1][1] + 1);
+
+                if (nums2[i] >= nums1[i - 1])
+                    dp[i][1] = dp[i - 1][0] + 1;
+
+                if (nums2[i] >= nums2[i - 1])
+                    dp[i][1] = max(dp[i][1], dp[i - 1][1] + 1);
+            }
+
+            maxLength = max(maxLength, max(dp[i][0], dp[i][1]));
+        }
+
+        return maxLength;
+*/
+
+int maxNonDecreasingLength(vector<int>& v, vector<int>& t) {
+    n = v.size();
+    vector<vector<ll>> dp(n+1,vector<ll>(3,0));
+    forj(n){
+        if(j){
+            if(v[j] >= v[j-1]){
+                dp[j][0] = dp[j-1][0]+1;
+            }
+            if(t[j] >= t[j-1]){
+                dp[j][1] = max(dp[j][1],1+dp[j-1][1]);
+            }
+
+            if(v[j] >= t[j-1]){
+                dp[j][0] = max(dp[j][0],1+dp[j-1][1]);
+            }
+
+            if(t[j] >= v[j-1]){
+                dp[j][1] = max(dp[j][1],1+dp[j-1][0]);
+            }
+        }
+    }
+
+    ll ans = 0;
+    forj(n){
+        ans = max({ans,dp[j][0],dp[j][1]});
+    }
+    return ans;
+    // forj(n){ll x = v[j],y = t[j];v[j] = min(v[j],t[j]);t[j] = max(v[j],t[j]);}
+
+}
+
+bool checkArray(vector<int>& v, int k) {
+    ll n = v.size();
+    vector<ll> pref(n+1,0);
+    ll sm = 0;
+    forj(n){
+        if(j > 0){
+            pref[j] += pref[j-1];
+        }
+
+        ll x = v[j]+pref[j];
+        if(x < 0){return 0;}
+        pref[j] -= x;
+        if(j+k > n and x){return 0;}
+        else if(j+k > n){continue;}
+        pref[j+k] += x;
+    }
+    forj(n){
+        if(v[j]+pref[j]){return 0;}
+    }
+    return 1;
+}
+
 void solve()
 {
  

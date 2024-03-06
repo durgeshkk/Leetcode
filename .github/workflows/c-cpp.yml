@@ -1,23 +1,78 @@
-name: C/C++ CI
+name: C/C++ CI Build
 
 on:
   push:
-    branches: [ "main" ]
+    paths:
+      - 2024_03_06_With_Workflow/**
+    branches: 
+      - main
+      - develop
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - main
+      - develop
+  workflow_dispatch:
 
 jobs:
-  build:
-
+  Build:
+    name: Leetcode Build Check
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: ${{ github.repository }} is cloned to the Runner
+      run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+
+    - name: List files in the repository
+      run: | 
+        ls ${{ github.workspace }}
+
+    - name: Set up C++ Environment
+      run: sudo apt-get install gcc g++ make -y
+
+    - name: Create a Folder to store all the cpp Files compiled Results
+      run: |
+        mkdir leetcoder
+        ls
+
+    - name: Identify Newly Added Files
+      id: identify-files
+      run: |
+        newly_added_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^2024_03_06_With_Workflow/' | grep '\.cpp$' || true)
+        echo "::set-output name=newly_added_files::$newly_added_files"
+
+    - name: Compile C++ files
+      run: |
+        newly_added_files="${{ steps.identify-files.outputs.newly_added_files }}"
+        if [ -n "$newly_added_files" ]; then
+          echo "Compiling newly added C++ files:"
+          for file in $newly_added_files; do
+            g++ "$file" || { echo "Compilation failed for $file"; exit 1; }
+          done
+        else
+          echo "No newly added C++ files found."
+        fi
+  
+    - name: Raise issue on compilation failure
+      if: failure()
+      run: |
+        echo "Compilation failed for some C++ files. Please check and fix the issues." > compilation_failure.txt
+        gh issue create --title "Compilation Failure" --body "$(cat compilation_failure.txt)"
+
+
+    # - name: Build C++ Files
+    # # find -name "*.${{ env.file_extention }}" => Find C++ Files
+    # # g++ -g $(find -name "*.${{ env.file_extention }}") -o leetcoder/
+    #   run: |
+    #     make
+    #   env:
+    #     file_extention: cpp
+
+    # - name: Upload to Artifactory
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: leetcode-artifact
+    #     path: leetcoder
+    #     if-no-files-found: warn

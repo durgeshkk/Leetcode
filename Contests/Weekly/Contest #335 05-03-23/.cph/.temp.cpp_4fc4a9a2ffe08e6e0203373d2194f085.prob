@@ -1,1 +1,0 @@
-{"name":"Local: temp","url":"e:\\LeetCode\\Contests\\Weekly\\Contest #335 05-03-23\\temp.cpp","tests":[{"id":1677987127490,"input":"2\n6\n4 7 8 15 3 5\n6\n4 7 15 8 3 5","output":"2\n-1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\LeetCode\\Contests\\Weekly\\Contest #335 05-03-23\\temp.cpp","group":"local","local":true}
