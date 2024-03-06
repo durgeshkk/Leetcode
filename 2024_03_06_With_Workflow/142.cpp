@@ -265,7 +265,7 @@ string shortestCommonSupersequence(string s1, string s2) {
 
 void solve()
 {
-    cout<<"HI\n";
+    cout<<"HI2\n";
     // ll n;
     // cin>>n;
     // vector<ll> v(n);
@@ -292,7 +292,7 @@ int main()
    //bfs();//call in solve()
    //dfs(1,0);//call in solve()
  
-   ll t=5;
+   ll t=2;
 //    cin >> t;
    ll i = 1;
    while (t--)

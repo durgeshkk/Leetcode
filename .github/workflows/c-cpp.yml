@@ -29,41 +29,31 @@ jobs:
       run: | 
         ls ${{ github.workspace }}
 
-    - name: Set up C++ Environment
-      run: sudo apt-get install gcc g++ make -y
+    # - name: Set up C++ Environment(By Default in Linux)
+    #   run: sudo apt-get install gcc g++ make -y
 
-    # - name: Create a Folder to store all the cpp Files compiled Results
+    - name: Create a Folder to store all the cpp Files compiled Results
+      run: |
+        mkdir compiled_outputs
+        ls
+
+    - name: Find and Compile C++ files
+      run: |
+        files=$(find -name "*.${{ env.file_extension }}")
+        for file in $files; do
+          g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
+        done
+      env:
+        file_extention: cpp
+      
+
+    # - name: Raise issue on compilation failure
+    #   if: failure()
     #   run: |
-    #     mkdir leetcoder
-    #     ls
-
-    - name: Identify Newly Added Files
-      id: identify-files
-      run: |
-        newly_added_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -E '^2024_03_06_With_Workflow/.*\.cpp$' || true)
-        echo "::set-output name=newly_added_files::$newly_added_files"
-
-    - name: Compile C++ files
-      run: |
-        newly_added_files="${{ steps.identify-files.outputs.newly_added_files }}"
-        if [ -n "$newly_added_files" ]; then
-          echo "Compiling newly added C++ files:"
-          for file in $newly_added_files; do
-            g++ "$file" || { echo "Compilation failed for $file"; exit 1; }
-          done
-        else
-          echo "No newly added C++ files found."
-        fi
-  
-    - name: Raise issue on compilation failure
-      if: failure()
-      run: |
-        echo "Compilation failed for some C++ files. Please check and fix the issues." > compilation_failure.txt
-        gh issue create --title "Compilation Failure" --body "$(cat compilation_failure.txt)"
 
 
     # - name: Build C++ Files
-    # # find -name "*.${{ env.file_extention }}" => Find C++ Files
+    # find -name "*.${{ env.file_extention }}" => Find C++ Files
     # # g++ -g $(find -name "*.${{ env.file_extention }}") -o leetcoder/
     #   run: |
     #     make
