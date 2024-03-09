@@ -1,23 +1,21 @@
 name: Run SonarQube with Maven
 
 on:
-    push:
-      paths:
-        - 2024_03_06_Practice/**
-      branches: 
-        - main
-        - develop
-    pull_request:
-      branches: 
-        - main
-        - develop
-    workflow_dispatch:
-      inputs:
-        SONARCLOUD_TOKEN:
-          description: 'This is Sonar Cloud Secret'
-          type: string
-          default: sonar_cloud_token
-          required: false
+  push:
+    branches: 
+      - main
+      - develop
+  pull_request:
+    branches: 
+      - main
+      - develop
+  workflow_dispatch:
+    inputs:
+      SONARCLOUD_TOKEN:
+        description: 'This is Sonar Cloud Secret'
+        type: string
+        default: sonar_cloud_token
+        required: false
         
 
 jobs:
