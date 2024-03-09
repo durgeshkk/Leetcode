@@ -52,7 +52,7 @@ jobs:
         cd 2024_03_06_With_Workflow
         ls
         FLAG=0
-        files=$(find -name "*.cpp")
+        files=$(find -name "*.${{ env.file_extention }}")
         for file in $files; do
           if ! g++ -c "$file"; then
             echo "Compilation failed for $file"
@@ -88,19 +88,4 @@ jobs:
           status -        `${{ job.status }}`
           Step - `${{ steps.set-failures.outputs.compilation_failures }}`
         assignees: durgeshkk
-
-
-    # - name: Build C++ Files
-    # find -name "*.${{ env.file_extention }}" => Find C++ Files
-    # # g++ -g $(find -name "*.${{ env.file_extention }}") -o leetcoder/
-    #   run: |
-    #     make
-    #   env:
-    #     file_extention: cpp
-
-    # - name: Upload to Artifactory
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: leetcode-artifact
-    #     path: leetcoder
-    #     if-no-files-found: warn
+    
