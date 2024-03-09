@@ -70,7 +70,7 @@ jobs:
     - name: Display Compilation Failures
     # echo "Compilation failures: ${{ steps.set-failures.outputs.compilation_failures }}"  
       run: |
-        echo "Compilation failures: COMPILATION_FAILURES"  
+        echo "Compilation failures: $COMPILATION_FAILURES"  
 
     # - name: Raise issue on compilation failure
     #   if: failure()
