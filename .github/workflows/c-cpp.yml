@@ -32,13 +32,11 @@ jobs:
       run: | 
         ls ${{ github.workspace }}
 
-    # - name: Set up C++ Environment(By Default in Linux)
-    #   run: sudo apt-get install gcc g++ make -y
-
     - name: Create a Folder to store all the cpp Files compiled Results
       run: |
         mkdir compiled_outputs
         cd 2024_03_06_With_Workflow
+        pwd
         ls
 
     - name: Find and Compile C++ files
@@ -49,8 +47,9 @@ jobs:
       # ::set-output name=OUTPUT_NAME::OUTPUT_VALUE
       # echo "{COMPILATION_FAILURES}={$compilation_failures}"
       run: |
+        pwd
         cd 2024_03_06_With_Workflow
-        ls
+        pwd
         FLAG=0
         files=$(find -name "*.${{ env.file_extention }}")
         for file in $files; do
