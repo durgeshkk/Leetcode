@@ -60,7 +60,7 @@ jobs:
             FLAG=1
           fi
         done
-        echo "{COMPILATION_FAILURES}={$compilation_failures}" >> $GITHUB_OUTPUT
+        echo "{COMPILATION_FAILURES}={$compilation_failures}"
         ls
         if [ "$FLAG" == "1" ]; then
           exit 1
