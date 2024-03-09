@@ -50,18 +50,18 @@ jobs:
       run: |
         cd 2024_03_06_With_Workflow
         ls
+        FLAG=0
         files=$(find -name "*.cpp")
-        f = 0
         for file in $files; do
           if ! g++ -c "$file"; then
             echo "Compilation failed for $file"
             compilation_failures="$compilation_failures $file"
-            f = 1
+            FLAG=1
           fi
         done
         echo "::set-output name=COMPILATION_FAILURES::$compilation_failures"
         ls
-        if [ "$f" == "1" ]; then
+        if [ "$FLAG" == "1" ]; then
           exit 1
         fi
       env:
