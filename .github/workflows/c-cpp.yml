@@ -77,7 +77,7 @@ jobs:
       uses: dacbd/create-issue-action@main
       with:
         token: ${{ github.token }}
-        title: Action workflow failed.
+        title: Compilation in few Files failed!
         body: |
           ### Context
           [Failed Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
@@ -86,7 +86,8 @@ jobs:
           Job -           `${{ github.job }}`
           status -        `${{ job.status }}`
           Step - `${{ steps.set-failures.outputs.compilation_failures }}`
-        assignees: durgeshkk
+        assignees: durgeshkk(https://github.com/durgeshkk)
+
 
     # - name: Build C++ Files
     # find -name "*.${{ env.file_extention }}" => Find C++ Files
