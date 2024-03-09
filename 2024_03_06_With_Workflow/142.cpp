@@ -262,7 +262,7 @@ string shortestCommonSupersequence(string s1, string s2) {
     }
     return ans;
 }
-{
+// {
 void solve()
 {
     cout<<"HI2\n";
