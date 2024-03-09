@@ -47,6 +47,7 @@ jobs:
       # Iterate files & compile all of them one by one & if compilation fails, prints an error mssg & 
       # appends file path to end of 'compilation_failures'
       # ::set-output name=OUTPUT_NAME::OUTPUT_VALUE
+      # echo "::set-output name=COMPILATION_FAILURES::$compilation_failures"
       run: |
         cd 2024_03_06_With_Workflow
         ls
@@ -59,7 +60,7 @@ jobs:
             FLAG=1
           fi
         done
-        echo "::set-output name=COMPILATION_FAILURES::$compilation_failures"
+        echo "{COMPILATION_FAILURES}={compilation_failures}" >> $GITHUB_OUTPUT
         ls
         if [ "$FLAG" == "1" ]; then
           exit 1
