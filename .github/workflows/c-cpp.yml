@@ -43,11 +43,6 @@ jobs:
 
     - name: Find and Compile C++ files
       id: set-failures
-      # g++ -c "$file" || { echo "Compilation failed for $file"; gh issue create --title "Compilation Failure" --body "Compilation failed for $file"; exit 1; }
-      # echo "Compilation failed for $file"
-      # gh auth login --with-token "${{ secrets.GITHUB_TOKEN }}"
-      # gh issue create --title "Compilation Failure" --body "Compilation failed for $file"
-      # exit 1;
       # Get the list of all cpp files and store it in 'files'
       # Iterate files & compile all of them one by one & if compilation fails, prints an error mssg & 
       # appends file path to end of 'compilation_failures'
@@ -56,24 +51,28 @@ jobs:
         cd 2024_03_06_With_Workflow
         ls
         files=$(find -name "*.cpp")
+        f = 0
         for file in $files; do
           if ! g++ -c "$file"; then
             echo "Compilation failed for $file"
             compilation_failures="$compilation_failures $file"
+            f = 1
           fi
         done
         echo "::set-output name=COMPILATION_FAILURES::$compilation_failures"
         ls
+        if [ "$f" == "1" ]; then
+          exit 1
+        fi
       env:
         file_extention: cpp
 
     - name: Display Compilation Failures
-    # echo "Compilation failures: ${{ steps.set-failures.outputs.compilation_failures }}"  
+      if: failure()
       run: |
-        echo "Compilation failures: $COMPILATION_FAILURES"  
+        echo "Compilation failures: ${{ steps.set-failures.outputs.compilation_failures }}"  
 
     # - name: Raise issue on compilation failure
-    #   if: failure()
     #   run: |
 
 
