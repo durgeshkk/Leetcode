@@ -18,8 +18,8 @@ jobs:
     name: Leetcode Build Check
     runs-on: ubuntu-latest
 
-    outputs:
-      COMPILATION_FAILURES: ${{ steps.set-failures.outputs.compilation_failures }}
+    outputs: # will be accessible to all the steps within this Job
+      COMPILATION_FAILURES: ${{ steps.set-failures.outputs.compilation_failures }} # This output var is set to {id} step's compilation_failure output/steps.{id}.outputs.{var_name}
 
     steps:
     - name: Checkout Repository
@@ -48,6 +48,10 @@ jobs:
       # gh auth login --with-token "${{ secrets.GITHUB_TOKEN }}"
       # gh issue create --title "Compilation Failure" --body "Compilation failed for $file"
       # exit 1;
+      # Get the list of all cpp files and store it in 'files'
+      # Iterate files & compile all of them one by one & if compilation fails, prints an error mssg & 
+      # appends file path to end of 'compilation_failures'
+      # ::set-output name=OUTPUT_NAME::OUTPUT_VALUE
       run: |
         cd 2024_03_06_With_Workflow
         ls
@@ -58,14 +62,15 @@ jobs:
             compilation_failures="$compilation_failures $file"
           fi
         done
-        echo "::set-output name=compilation_failures::$compilation_failures"
+        echo "::set-output name=COMPILATION_FAILURES::$compilation_failures"
         ls
       env:
         file_extention: cpp
 
     - name: Display Compilation Failures
+    # echo "Compilation failures: ${{ steps.set-failures.outputs.compilation_failures }}"  
       run: |
-        echo "Compilation failures: ${{ steps.set-failures.outputs.compilation_failures }}"  
+        echo "Compilation failures: COMPILATION_FAILURES"  
 
     # - name: Raise issue on compilation failure
     #   if: failure()
