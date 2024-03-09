@@ -86,7 +86,7 @@ jobs:
           Job -           `${{ github.job }}`
           status -        `${{ job.status }}`
           Step - `${{ steps.set-failures.outputs.compilation_failures }}`
-        assignees: durgeshkk(https://github.com/durgeshkk)
+        assignees: durgeshkk
 
 
     # - name: Build C++ Files
