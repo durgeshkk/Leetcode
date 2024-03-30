@@ -125,7 +125,7 @@ int minimumLevels(vector<int>& v) {
     return ans;
 }
 
-int minimumSubarrayLength(vector<int>& v, int k) {
+int minimumSubarrayLengthC(vector<int>& v, int k) {
     if(!k){return 1;}
     ll n = v.size(),l = 0,h = n,ans = -1;
     while(l <= h){
