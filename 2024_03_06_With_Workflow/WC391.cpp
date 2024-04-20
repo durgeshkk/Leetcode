@@ -138,7 +138,7 @@ int minimumDistance(vector<vector<int>>& v) {
 
     set<vector<int>> contri;
 
-    ll dist = abs(v[n-1][0]-v[0][0])+abs(v[n-1][1]-v[0][1]);
+    dist = abs(v[n-1][0]-v[0][0])+abs(v[n-1][1]-v[0][1]);
     for(ll i = 0,j = 0;i<n;++i){
         while(j<n and (abs(v[j][0]-v[i][0])+abs(v[j][1]-v[i][1])) <= dist){
             ++j;
