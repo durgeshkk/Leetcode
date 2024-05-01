@@ -278,43 +278,37 @@ public:
 	}
 };
 
-
-
-class Solution {
-public:
-    vector<int> stringIndices(vector<string>& wc, vector<string>& wq) {
-        Trie* tr = new Trie();
-        for(int i=0; i<wc.size(); ++i)
-            tr->insert(wc[i], i, wc);
-        
-        vector<int> ans;
-        int index;
-        int mn = 1e5;
-        for(int i=0; i<wc.size(); ++i){
-            int len = wc[i].size();
-            mn = min(mn, len);
-        }
+vector<int> stringIndices(vector<string>& wc, vector<string>& wq) {
+    Trie* tr = new Trie();
+    for(int i=0; i<wc.size(); ++i)
+        tr->insert(wc[i], i, wc);
     
-        int def;
-        for(int i=0; i<wc.size(); ++i){
-            if(wc[i].size() == mn){
-                def = i;
-                break;
-            }
-        }
-        
-        for(int i=0; i<wq.size(); ++i){   
-            index = tr->check(wq[i]);
-            if(index == -1){
-                ans.push_back(def);
-                continue;
-            }
-            ans.push_back(index);
-        }
-        return ans;
+    vector<int> ans;
+    int index;
+    int mn = 1e5;
+    for(int i=0; i<wc.size(); ++i){
+        int len = wc[i].size();
+        mn = min(mn, len);
     }
-};
 
+    int def;
+    for(int i=0; i<wc.size(); ++i){
+        if(wc[i].size() == mn){
+            def = i;
+            break;
+        }
+    }
+    
+    for(int i=0; i<wq.size(); ++i){   
+        index = tr->check(wq[i]);
+        if(index == -1){
+            ans.push_back(def);
+            continue;
+        }
+        ans.push_back(index);
+    }
+    return ans;
+}
 
 
 void solve(){

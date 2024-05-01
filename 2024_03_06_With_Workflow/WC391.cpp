@@ -129,9 +129,29 @@ long long countAlternatingSubarrays(vector<int>& v) {
     return ans;
 }
 
+// Correct Approach : https://cs.stackexchange.com/questions/104307/minimizing-the-maximum-manhattan-distance
+int minimumDistance(vector<vector<int>>& v) {    
+    ll dist = 3e8,n = v.size();
+    // 2 ms for 2D
+    multiset<ll> ms1,ms2;
+    forj(n){
+        ms1.insert(v[j][0]+v[j][1]);
+        ms2.insert(v[j][0]-v[j][1]);
+    }
+
+    forj(n){
+        ms1.erase(ms1.find(v[j][0]+v[j][1]));
+        ms2.erase(ms2.find(v[j][0]-v[j][1]));
+        dist = min(dist,max(*ms1.rbegin()-*ms1.begin(),*ms2.rbegin()-*ms2.begin()));
+        ms1.insert(v[j][0]+v[j][1]);
+        ms2.insert(v[j][0]-v[j][1]);
+    }
+    return dist;
+}
+
+// WRONG Approach : 
 // [[1,1],[1,1],[1,1]]
 // [[5,3],[4,6],[2,4],[1,8],[3,9],[1,6]]
-
 int minimumDistance(vector<vector<int>>& v) {
     sort(all(v));
     ll dist = 0,x1 = 0,y1 = 0,x2 = 0,y2 = 0,n = v.size();
