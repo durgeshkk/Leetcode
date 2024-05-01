@@ -10,7 +10,7 @@ Will never let you Down!!
 #include <ext/pb_ds/assoc_container.hpp> // Common file
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
-#define ordered_set tree<int, null_type,less_equal<int>, rb_tree_tag,tree_order_statistics_node_update>
+#define ordered_set tree<int, null_type,greater_equal<int>, rb_tree_tag,tree_order_statistics_node_update>
 #define ll long long int
 #define all(a) a.begin(),a.end()
 #define enter(a) for(ll i=0;i<a.size();i++) cin>>a[i];
@@ -178,45 +178,31 @@ vector<int> resultArray(vector<int>& v) {
     o1.insert(v[0]);o2.insert(v[1]);
     ll n = v.size();
     for(ll i = 2;i<n;++i){
-        ll x = v[i];
-        ll idx1 = lower_bound(x,o1);
-        ll g1 = 0;
-        if(idx1 != -1){
-            g1 = o1.size()-idx1;
-            // cout<<ele1<<" "<<pos1<<" "<<g1<<endl;
-        }
-        auto idx2 = lower_bound(x,o2);
-        ll g2 = 0;
-        if(idx2 != -1){
-            g2 = o2.size()-idx2;
-            // cout<<ele2<<" "<<pos2<<" "<<g2<<endl;
-        }
-
-        if(g1 > g2){
-            v1.push_back(v[i]);
+        ll idx1 = o1.order_of_key(v[i]);
+        ll idx2 = o2.order_of_key(v[i]);
+        if(idx1 > idx2){
             o1.insert(v[i]);
-        }else if(g1 == g2){
-            if(v1.size() > v2.size()){
-                v2.push_back(v[i]);
+            v1.push_back(v[i]);
+        }else if(idx1 == idx2){
+            if(o1.size() > o2.size()){
                 o2.insert(v[i]);
-            }else if(v1.size() == v2.size()){
-                v1.push_back(v[i]);
-                o1.insert(v[i]);
+                v2.push_back(v[i]);
             }else{
-                v1.push_back(v[i]);
                 o1.insert(v[i]);
+                v1.push_back(v[i]);
             }
         }else{
-            v2.push_back(v[i]);
             o2.insert(v[i]);
+            v2.push_back(v[i]);
         }
     }
-
     for(auto it:v2){
         v1.push_back(it);
     }
     return v1;
 }
+
+
 
 void solve(){
     ll n;cin>>n;

@@ -91,163 +91,114 @@ void tree(){
 
 //  "A" : 65, "a" : 97  (-> |) (<- &(~))
 // YE DIL MAANGE MORE!!
-int minimumBoxes(vector<int>& v, vector<int>& t) {
-    ll sm = accumulate(all(v),0ll);
-    sort(all(t));
-    reverse(all(t));
-    ll ans = 0;
-    for(auto it:t){
-        sm -= it;
-        ++ans;
-        if(sm <= 0){
-            break;
+int numberOfSpecialChars(string s) {
+    multiset<ll> st;  ll ans=  0;
+    vector<ll> first,last;
+    vector<ll> freq1,freq2;
+    for(char j = 'a';j<='z';++j){
+        ll cntr = 0,idx = -1;
+        for(ll i = 0;i<s.size();++i){ 
+            if(s[i] == j){
+                idx = i;++cntr;
+            }
+        }
+        first.push_back(idx);
+        freq1.push_back(cntr);
+    }
+
+    for(char j = 'A';j<='Z';++j){
+        ll cntr = 0,idx = -1;
+        for(ll i = 0;i<s.size();++i){ 
+            if(s[i] == j){
+                ++cntr;
+            }
+        }
+        freq2.push_back(cntr);
+    }
+
+    for(char j = 'A';j<='Z';++j){
+        ll cntr = 0,idx = -1;
+        for(ll i = 0;i<s.size();++i){ 
+            if(s[i] == j){
+                idx = i;break;
+            }
+        }
+        last.push_back(idx);
+    }
+
+    for(ll i = 0;i<26;++i){
+        if(first[i] == -1 || last[i] == -1){continue;}
+        if(first[i] < last[i]){
+            ll x = min(freq1[i],freq2[i]);
+            if(x){++ans;}
         }
     }
+
     return ans;
 }
 
-long long maximumHappinessSum(vector<int>& v, int k) {
-    sort(all(v));
-    ll ans = 0,cntr = 0;
-    for(ll i = v.size()-1;i>=0;--i){
-        if(cntr == 1ll*k){break;}
-        ans += max(0ll,1ll*v[i]-cntr);
-        ++cntr;
-    }
-    return ans;
-}
+ll n,m;
+vector<vector<ll>> mp,dp;
+ll recur(ll idx, ll prev){
+    if(idx == m){return 0;}
+    if(prev != -1 and dp[idx][prev] != -1){return dp[idx][prev];}
 
-vector<string> shortestSubstrings(vector<string>& v) {
-    ll n = v.size();
-    map<string,ll> mp;
-    for(ll i = 0;i<n;++i){
-        string s = v[i];
-        ll sz = s.size();
-        forj(sz){
-            string tmp;
-            for(ll k = j;k<sz;++k){
-                tmp += s[k];
-                mp[tmp]++;
-            }
-        }
-    }
-    
-    vector<string> ans;
-    for(ll i = 0;i<n;++i){
-        // Remove its occurences
-        string s = v[i];
-        ll sz = s.size();
-        forj(sz){
-            string tmp;
-            for(ll k = j;k<sz;++k){
-                tmp += s[k];
-                mp[tmp]--;
-            }
-        }
-        
-        // Check if its substring in any other string
-        string sa = s;sa += 'a';
-        
-        forj(sz){
-            string tmp;
-            for(ll k = j;k<sz;++k){
-                tmp += s[k];
-                if(mp[tmp] == 0){
-                    if(tmp.size() < sa.size()){
-                        sa = tmp;
-                    }else if(tmp.size() == sa.size()){
-                        sa = min(sa,tmp);
-                    }
-                }
-            }
-        }
-        
-        if(sa.size() > s.size()){
-            sa.clear();
-            ans.push_back(sa);
+    ll sa = 1e8;
+    for(ll i = 0;i<=9;++i){
+        if(i == prev){
         }else{
-            ans.push_back(sa);
-        }
-
-        // Add Freq Back
-        forj(sz){
-            string tmp;
-            for(ll k = j;k<sz;++k){
-                tmp += s[k];
-                mp[tmp]++;
-            }
+            sa = min(sa,mp[i][idx]+recur(idx+1,i));
         }
     }
-    return ans;
-}    
-
-ll n;
-vector<ll> v;
-vector<vector<ll>> dp;
-ll recur2(ll idx,ll k){
-    if(!k){return 0;}
-
-    if(idx == n){
-        if(k){return -1e15;}
-        return 0;
+    return dp[idx][prev] = sa;
+}
+int minimumOperations(vector<vector<int>>& v) {
+    n = v.size(),m = v[0].size();
+    mp.assign(11,vector<ll> (v[0].size(),0));
+    mp.assign(n+5,vector<ll> (11,-1));
+    for(ll i = 0;i<n;++i){
+        for(ll j = 0;j<m;++j){
+            mp[v[i][j]][j]++;
+        }
     }
-
-    ll &sa = dp[idx][k];
-    if(sa != -1e15){return sa;}
-
-    ll curval = v[idx]*k;
-    if(!(k%2)){curval *= -1;}
-
-    ll a = -1e15,b = -1e15;
-    if(k){a = recur2(idx+1,k-1);}
-
-    if(n-idx > k){b = recur2(idx+1,k);}
-
-    return (sa = (max(a,b)+curval));
+    return recur(0,-1);
 }
 
-long long maximumStrength(vector<int>& tmp, int k) {
-    n = tmp.size();
-    for(auto it:tmp){v.push_back(1ll*it);}
-    dp.assign(n+1, vector<ll> (k+1,-1e15));
-    
-    ll ans = -1e15;
-    for(ll i=0;i<=(n-k);++i){
-        ans = max(ans,recur2(i,k));
-    }   
+// void dijkstra(ll src){
+//     dist[src] = 0;
+//     s.insert({0,src});
+//     while(!s.empty()){
+//         auto p = *s.begin();s.erase(s.find(p));vis[p.second] = 1;
+//         for(auto it:adj[p.second]){
+//             if(!vis[it.first]){
+//                 ll new_dist = (p.first+it.second);
+//                 if(new_dist < dist[it.first]){
+//                     s.erase(s.find({dist[it.first],it.first}));
+//                     s.insert({new_dist,it.first});
+//                     dist[it.first] = new_dist;
+//                 }
+//             }
+//         }
+//     }
 
-    // Sol 2 : Mem
-    /*
-    // Reverse since we are trying for 1 -> k subarray now & not from k -> 1
-    reverse(tmp.begin(),tmp.end());
-    
-    v.push_back(0);
-    n = tmp.size();
-    for(auto it:tmp){v.push_back(1ll*it);}
+//     vis.assign(n+1,0);
+//     dist.assign(n+1,1e12);
+//     for(ll i=0;i<edges;i++){
+//         s.insert({1e12,i});// Initially all at max. dist
+//         ll u = edges[i][0],v= edges[i][1],cst= edges[i][2];
+//         adj[u].push_back({v,cst});adj[v].push_back({u,cst});
+//     }  
+//     dijkstra(0);
+//     show(dist);
+// }   
+ll k;
+ll dfs(ll src,ll dist){
+    if(dist > k){return -1;}
 
-    ll mem[n+1][k+1][2];
-    for(ll i = 0;i<=n;++i){
-        for(ll j= 0;j<=k;++j){
-            mem[i][j][0] = -1e18;
-            mem[i][j][1] = -1e18;
-        }
+    ll sa = 0;
+    for(auto x:adj[src]){
+        ll y = dfs(x,dist+adj[src][x]);
     }
-    mem[0][1][0] = 0;
-    
-    ll ans = -1e18;
-    for(ll i = 1;i<=n;++i){
-        for(ll j = 1;j<=k;++j){
-            ll curval = v[i]*j;
-            if(!(j%2)){curval *= -1;}
-
-            mem[i][j][0] = max(mem[i-1][j][0],mem[i-1][j-1][1]);
-            mem[i][j][1] = curval+max({mem[i-1][j][1],mem[i-1][j][0],mem[i-1][j-1][1]});
-        }
-        ans = max(ans,mem[i][k][1]);
-    }
-    return ans;
-    */   
-   return ans;
 }
 
 void solve(){
