@@ -1,4 +1,4 @@
-/*
+x/*
 Once in a LifeTime,
 Will never let you Down!!
 */
@@ -102,8 +102,9 @@ ll func(ll i,ll j,ll n,ll m,vector<vector<char>>& v){
     }else{
         return 0;
     }
-    
+    return 1;
 }
+
 bool canMakeSquare(vector<vector<char>>& grid) {
     ll n = 3,m = 3;
     for(ll i = 0;i<n;++i){

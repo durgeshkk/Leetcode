@@ -191,15 +191,6 @@ int minimumOperations(vector<vector<int>>& v) {
 //     dijkstra(0);
 //     show(dist);
 // }   
-ll k;
-ll dfs(ll src,ll dist){
-    if(dist > k){return -1;}
-
-    ll sa = 0;
-    for(auto x:adj[src]){
-        ll y = dfs(x,dist+adj[src][x]);
-    }
-}
 
 void solve(){
     ll n;cin>>n;
