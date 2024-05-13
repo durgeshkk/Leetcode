@@ -91,62 +91,175 @@ void tree(){
 
 //  "A" : 65, "a" : 97  (-> |) (<- &(~))
 // YE DIL MAANGE MORE!!
-int minimumAddedInteger(vector<int>& a, vector<int>& b) {
-    ll n=a.size(),m = n-2,ans = 10001;
-    sort(a.begin(),a.end());
-    sort(b.begin(),b.end());
+int findPermutationDifference(string s, string t) {
+    map<char,ll> mp;       
+    ll n = s.size();
     for(ll i = 0;i<n;++i){
-        for(ll j = 0;j<n;++j){
-            if(i == j){continue;}
-            // Try removing i & j
-            vector<ll> v;
-            for(ll k = 0;k<n;++k){
-                if(k == i || k == j){continue;}
-                v.push_back(a[k]);
-            }
+        mp[s[i]] = (i);
+    }
 
-            ll diff = 10001;
-            for(ll k = 0;k<m;++k){
-                if(diff == 10001){
-                    diff = v[k]-a[k];
-                }else{
-                    if(diff != (v[k]-a[k])){
-                        diff == 10001;break;
-                    }
+    ll ans = 0;
+    for(ll i = 0;i<n;++i){
+        ans += abs(i-mp[t[i]]);
+    }
+    return ans;
+}
+
+int maximumEnergy(vector<int>& v, int k) {
+    ll n = v.size(),ans = -1e9;
+    vector<ll> tmp;
+    for(ll i = 0;i<k;++i){
+        ll idx = i,sm = 0;
+        while(idx < n){
+            sm += v[idx];
+            idx += k;
+        }
+        tmp.push_back(sm);
+        ans = max(ans,sm);
+    }
+
+    for(ll i = 0;i<n-k;++i){
+        ll idx = (i%k);
+        tmp[idx] -= v[i];
+        ans = max(ans,tmp[idx]);
+    }
+    return ans;
+}
+
+int maxScore(vector<vector<int>>& v) {
+    int n = v.size(),m = v[0].size();
+    vector<vector<int>> maxi(n,vector<int>(m,0));
+    for(ll i = n-1;i>=0;--i){
+        for(ll j = m-1;j>=0;--j){
+            int x = 0;
+            if(i < n-1){
+                x = max({x,maxi[i+1][j],v[i+1][j]});
+            }
+            if(j < m-1){
+                x = max({x,maxi[i][j+1],v[i][j+1]});
+            }
+            maxi[i][j] = x;
+        }
+    }
+
+    int ans= -3e5;
+    for(ll i = n-1;i>=0;--i){
+        for(ll j = m-1;j>=0;--j){
+            if(i == n-1 and j == m-1){continue;}
+            ans = max(ans,maxi[i][j]-v[i][j]);
+        }
+    } 
+    return ans;    
+}
+
+// TLE For a Reason : RECURSION
+/*
+vector<ll> ans;
+
+void dfs(vector<ll> &perm, vector<bool> &used, ll curr_cst,vector<ll> &v, ll &mn_cst){
+    ll n = v.size();
+    if (perm.size() == n){
+        ll final_cost = curr_cst + abs(perm.back() - v[perm[0]]);
+        if (final_cost < mn_cst){
+            mn_cst = final_cost;
+            ans = perm;
+        }
+        return;
+    }
+
+    for (ll i = 0; i < n; ++i){
+        if (!used[i]){
+            if (!perm.empty()){
+                ll next_cost = curr_cst + abs(perm.back() - v[i]); // for the last v[perm[i+1]] is i 
+                if (next_cost < mn_cst)
+                {
+                    used[i] = 1;
+                    perm.push_back(i);
+                    dfs(perm, used, next_cost, v, mn_cst);
+                    perm.pop_back();
+                    used[i] = 0;
                 }
             }
-
-            ans = min(ans,diff);
-        }
-    }
-    return ans;
-}
-
-long long minEnd(int n, int x) {
-    n--;
-    if(!n){return x;}
-    bitset<64> a(x);
-    bitset<64> b(n);
-    ll j = 0;
-    for(ll i = 0;i<64;++i){
-        if(!a[i]){
-            if(b[j]){
-                a[i] = 1;++j;
-            }else{
-                ++j;
+            else
+            {
+                used[i] = 1;
+                perm.push_back(i);
+                dfs(perm, used, 0, v, mn_cst);
+                perm.pop_back();
+                used[i] = 0;
             }
         }
     }
+}
 
-    ll ans = -1,idx = -1,z = 0;
+vector<ll> findPermutation(vector<ll> &v){
+    ll n = v.size();
+    ll mn_cst = INT_MAX;
 
-    for(ll i = 0;i<64;++i){
-        if(a[i]){
-            ans += (1<<i);
-        }
-    }
+    vector<bool> used(n, 0);
+    vector<ll> perm;
+
+    dfs(perm, used, 0, v, mn_cst);
     return ans;
 }
+*/
+
+ll n,min_score;
+vector<ll> perm;
+vector<ll> ans;
+
+ll getScore(ll i, vector<ll>& v){
+    if(i < perm.size()-1){
+        return abs(perm[i] - v[perm[i+1]]);
+    }else{
+        return abs(perm[perm.size()-1] - v[perm[0]]);
+    }
+}
+
+void run(ll idx, ll score, ll bitmask, vector<ll>& v){
+    n = v.size();
+    if(idx > 0){
+        score += getScore(idx-1,v);
+    }
+
+    if(idx == perm.size()-1){
+        score += getScore(idx,v);
+        if(score < min_score){
+            min_score = score;
+            ans = perm;
+        }
+        return;
+    }
+
+    if(score >= min_score){
+        return;
+    }
+    
+    idx++;
+    for(ll i=0, cur=1; i<perm.size(); ++i){
+        if(bitmask & cur){
+            (cur <<= 1);
+            continue;
+        }
+            
+        perm[idx] = i;
+        run(idx, score, bitmask|cur, v);
+        (cur <<= 1);
+    }
+}
+
+vector<ll> findPermutation(vector<ll>& v) {
+    min_score = INT_MAX;perm.clear();ans.clear();
+
+    for(ll i=0; i<v.size(); i++){
+        perm.push_back(i);
+    }
+
+    run(0, 0, 1, v);    
+
+    return ans;
+}
+
 
 void solve(){
     ll n;cin>>n;
@@ -156,7 +269,7 @@ void solve(){
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
+    ios_base::sync_with_stdio(0);
     cin.tie(NULL);
     cout.tie(NULL);
     //setprecision(20);// also use precision with ans now
