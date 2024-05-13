@@ -189,25 +189,25 @@ long long pie(vector<int> &coins, long long x)
     return cnt;
 }
 
-long long findKthSmallest(vector<int> &coins, int k)
-{
-    long long kk = k;
-    long long l = 1, r = 1e11, ans = 0;
-    while (l <= r)
-    {
-        long long m = l + (r - l) / 2;
-        long long cnt = 0;
-        cnt = pie(coins, m);
-        if (cnt < kk)
-            l = m + 1;
-        else
-        {
-            ans = m;
-            r = m - 1;
-        }
-    }
-    return ans;
-}
+// long long findKthSmallest(vector<int> &coins, int k)
+// {
+//     long long kk = k;
+//     long long l = 1, r = 1e11, ans = 0;
+//     while (l <= r)
+//     {
+//         long long m = l + (r - l) / 2;
+//         long long cnt = 0;
+//         cnt = pie(coins, m);
+//         if (cnt < kk)
+//             l = m + 1;
+//         else
+//         {
+//             ans = m;
+//             r = m - 1;
+//         }
+//     }
+//     return ans;
+// }
 
 // https://leetcode.com/problems/kth-smallest-amount-with-single-denomination-combination/
 bool check(ll x,vector<int> &coins){
@@ -215,6 +215,7 @@ bool check(ll x,vector<int> &coins){
     // Also there will be many overlaps like 3-> 9 & 9->9 ; 3->3 & 6->6
     // By Inclusion Exclusion Principle for 3 coins : n(C1)+n(C2)+n(C3)-n(C1 U C2)-n(C1 U C3)-n(C3 U C2)+n(C1 U C2 U C3)
     // And since coins.size() <= 15, so we can use recursion here => 2^15 = 32768
+    return true;
 }
 
 vector<vector<ll>> memo;
@@ -240,6 +241,7 @@ long long findKthSmallest(vector<int> &coins, int k){
             l = mid+1;
         }
     }
+    return 0;
 }
 
 vector<vector<unordered_map<int, int>>> dp;
