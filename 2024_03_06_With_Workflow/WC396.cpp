@@ -161,7 +161,7 @@ int minAnagramLength(string s) {
     return ans;
 }
 
-ll solve(vector<ll> &v, ll sm, ll inc, ll c1, ll c2){ // v is diff array
+ll solver(vector<ll> &v, ll sm, ll inc, ll c1, ll c2){ // v is diff array
     // Total we need to club up to reach (mx+inc) that will be sm + (n*inc)
     ll n = v.size();
     ll needed = sm + (n*inc);
@@ -193,9 +193,9 @@ int minCostToEqualizeArray(vector<ll>& v, int c1, int c2) {
     sort(all(diff));
     ll sm = accumulate(all(diff),0ll);
 
-    ans = solve(diff,sm,0,c1,c2);
+    ans = solver(diff,sm,0,c1,c2);
     for(ll inc = 1;inc <= 1e6;++inc){
-        ans = min(ans,solve(diff,sm,inc,c1,c2));
+        ans = min(ans,solver(diff,sm,inc,c1,c2));
     }
     return (ans%mod);
 }
