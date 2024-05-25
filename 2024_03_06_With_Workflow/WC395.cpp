@@ -148,6 +148,51 @@ long long minEnd(int n, int x) {
     return ans;
 }
 
+// Prerequisite : https://leetcode.com/problems/subarrays-with-k-different-integers/submissions/1217982826/
+ll countSubarraysWithAtMostKDistinct(vector<int>& nums, ll k){
+    ll n=nums.size();
+    unordered_map<ll, ll> mp;
+    ll i=0, j=0;
+    ll c=0;
+    
+/*
+    Subarray from [i,j] having unique elements = k, will have all the subarrays whose distinct
+    elements count will be <= k & will contribute to the answer for (uniqueness <= k)
+*/
+
+    while(j<n){
+        mp[nums[j]]++;
+        
+        while(i<=j && mp.size()>k){
+            if(--mp[nums[i]] == 0) mp.erase(nums[i]);
+            i++;
+        }
+        c += (j-i+1);
+        j++;
+    }
+    
+    return c;
+}
+int medianOfUniquenessArray(vector<int>& v) {
+    ll n = v.size();
+    ll l = 1,r = n,total = n*(n+1)/2,ans = 0;
+    while(l <= r){
+        ll mid = (l+r)/2;
+        ll ele = countSubarraysWithAtMostKDistinct(v,mid);
+        // If mid is the median of the subarray then there must be atleast ceil(1.0*n/2) elements less equal than mid 
+        // So atleast ceil(1.0*n/2) elements in the uniqueness array must be <= mid
+        // That is, count of subarrays whose distinct element count <= mid. 
+        // And after this I'll get ans as True for all greater elements!
+        if(2*ele >= total){ 
+            r = mid-1;
+        }else{
+            l = mid+1;
+            ans = mid;
+        }
+    }
+    return ans;
+}
+
 void solve(){
     ll n;cin>>n;
     vector<ll> v(n);enter(v);
