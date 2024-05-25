@@ -76,19 +76,6 @@ void createsieve(){
     }
 }
 
-
-vector<ll> adj[100004];
-
-void tree(){
-    ll n;
-    cin>>n;
-
-    ll u,v;
-    cin>>u>>v;
-    adj[u].push_back(v);
-    adj[v].push_back(u);
-}
-
 //  "A" : 65, "a" : 97  (-> |) (<- &(~))
 // YE DIL MAANGE MORE!!
 int numberOfSpecialChars(string s) {
@@ -164,33 +151,63 @@ int minimumOperations(vector<vector<int>>& v) {
     return recur(0,-1);
 }
 
-// void dijkstra(ll src){
-//     dist[src] = 0;
-//     s.insert({0,src});
-//     while(!s.empty()){
-//         auto p = *s.begin();s.erase(s.find(p));vis[p.second] = 1;
-//         for(auto it:adj[p.second]){
-//             if(!vis[it.first]){
-//                 ll new_dist = (p.first+it.second);
-//                 if(new_dist < dist[it.first]){
-//                     s.erase(s.find({dist[it.first],it.first}));
-//                     s.insert({new_dist,it.first});
-//                     dist[it.first] = new_dist;
-//                 }
-//             }
-//         }
-//     }
+vector<pair<ll,ll>> adj[50005];
+set<pair<ll,ll>> s;
+vector<ll> vis;
 
-//     vis.assign(n+1,0);
-//     dist.assign(n+1,1e12);
-//     for(ll i=0;i<edges;i++){
-//         s.insert({1e12,i});// Initially all at max. dist
-//         ll u = edges[i][0],v= edges[i][1],cst= edges[i][2];
-//         adj[u].push_back({v,cst});adj[v].push_back({u,cst});
-//     }  
-//     dijkstra(0);
-//     show(dist);
-// }   
+void dijkstra(ll src,vector<ll> &dist){
+    dist[src] = 0;
+    s.insert({0,src});
+    while(!s.empty()){
+        auto p = *s.begin();s.erase(s.find(p));vis[p.second] = 1;
+        for(auto it:adj[p.second]){
+            if(!vis[it.first]){
+                ll new_dist = (p.first+it.second);
+                if(new_dist < dist[it.first]){
+                    s.erase(s.find({dist[it.first],it.first}));
+                    s.insert({new_dist,it.first});
+                    dist[it.first] = new_dist;
+                }
+            }
+        }
+    }
+} 
+
+/*
+1. Find shortest path distance from src to dest.
+2. For edge [i,j], to be involved in shortest path : [src,i] + [i,j] + [j,dest] = shortest path distance
+*/
+vector<bool> findAnswer(int n, vector<vector<int>>& edges) {
+    vis.assign(n+5,0);
+    vector<ll> dist(n+5,1e12),dist2(n+5,1e12);
+    for(ll i=0;i<edges.size();i++){
+        ll u = 1ll*edges[i][0],v= 1ll*edges[i][1],cst= 1ll*edges[i][2];
+        adj[u].push_back({v,cst});adj[v].push_back({u,cst});
+    }  
+    
+    for(ll i=0;i<n;i++){s.insert({1e12,i});}
+    dijkstra(0ll,dist);
+
+    vis.clear();vis.assign(n+5,0);
+    for(ll i=0;i<n;i++){s.insert({1e12,i});}
+    dijkstra(1ll*n-1,dist2);
+
+    ll shortest_dist = dist[n-1];
+    vector<bool> ans(edges.size(),false);
+    forj(edges.size()){
+        ll src = 1ll*edges[j][0],dest= 1ll*edges[j][1],cst= 1ll*edges[j][2];
+        // 0 -> src -> dest -> n-1
+        ll sa = dist[src]; // 0-> src
+        sa += cst;// src->dest
+        sa += dist2[dest];// dest->(n-1) , which can easily be traversed from considering (n-1) as src
+
+        // 0 -> dest -> src -> n-1
+        ll sa2 = dist[dest] + cst + dist2[src];
+        if(min(sa,sa2) == shortest_dist){ans[j]=true;}
+    }
+    return ans;
+}
+  
 
 void solve(){
     ll n;cin>>n;
