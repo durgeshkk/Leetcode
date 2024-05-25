@@ -152,7 +152,7 @@ int minimumDistance(vector<vector<int>>& v) {
 // WRONG Approach : 
 // [[1,1],[1,1],[1,1]]
 // [[5,3],[4,6],[2,4],[1,8],[3,9],[1,6]]
-int minimumDistance(vector<vector<int>>& v) {
+int minimumDistance2(vector<vector<int>>& v) {
     sort(all(v));
     ll dist = 0,x1 = 0,y1 = 0,x2 = 0,y2 = 0,n = v.size();
 

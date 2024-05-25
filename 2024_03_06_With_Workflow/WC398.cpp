@@ -91,106 +91,122 @@ void tree(){
 
 //  "A" : 65, "a" : 97  (-> |) (<- &(~))
 // YE DIL MAANGE MORE!!
-int minimumAddedInteger(vector<int>& a, vector<int>& b) {
-    ll n=a.size(),m = n-2,ans = 10001;
-    sort(a.begin(),a.end());
-    sort(b.begin(),b.end());
-    for(ll i = 0;i<n;++i){
-        for(ll j = 0;j<n;++j){
-            if(i == j){continue;}
-            // Try removing i & j
-            vector<ll> v;
-            for(ll k = 0;k<n;++k){
-                if(k == i || k == j){continue;}
-                v.push_back(a[k]);
-            }
-
-            ll diff = 10001;
-            for(ll k = 0;k<m;++k){
-                if(diff == 10001){
-                    diff = v[k]-a[k];
-                }else{
-                    if(diff != (v[k]-a[k])){
-                        diff == 10001;break;
-                    }
-                }
-            }
-
-            ans = min(ans,diff);
-        }
-    }
-    return ans;
-}
-
-long long minEnd(int n, int x) {
-    n--;
-    if(!n){return x;}
-    bitset<64> a(x);
-    bitset<64> b(n);
-    ll j = 0;
-    for(ll i = 0;i<64;++i){
-        if(!a[i]){
-            if(b[j]){
-                a[i] = 1;++j;
-            }else{
-                ++j;
-            }
-        }
+bool isArraySpecial(vector<int>& nums) {
+    vector<ll> pref;
+    for(auto it:nums){
+        pref.push_back(it & 1);
     }
 
-    ll ans = -1,idx = -1,z = 0;
-
-    for(ll i = 0;i<64;++i){
-        if(a[i]){
-            ans += (1<<i);
+    vector<ll> tmp;
+    for(ll i = 0;i<pref.size();++i){
+        while((i+1<pref.size()) and (pref[i+1] == 1^pref[i])){
+            ++i;
         }
-    }
-    return ans;
-}
-
-// Prerequisite : https://leetcode.com/problems/subarrays-with-k-different-integers/submissions/1217982826/
-ll countSubarraysWithAtMostKDistinct(vector<int>& nums, ll k){
-    ll n=nums.size();
-    unordered_map<ll, ll> mp;
-    ll i=0, j=0;
-    ll c=0;
-    
-/*
-    Subarray from [i,j] having unique elements = k, will have all the subarrays whose distinct
-    elements count will be <= k & will contribute to the answer for (uniqueness <= k)
-*/
-
-    while(j<n){
-        mp[nums[j]]++;
-        
-        while(i<=j && mp.size()>k){
-            if(--mp[nums[i]] == 0) mp.erase(nums[i]);
-            i++;
-        }
-        c += (j-i+1);
-        j++;
+        tmp.push_back(i);
     }
     
-    return c;
+    return tmp.size() <= 1;
 }
-int medianOfUniquenessArray(vector<int>& v) {
-    ll n = v.size();
-    ll l = 1,r = n,total = n*(n+1)/2,ans = 0;
-    while(l <= r){
-        ll mid = (l+r)/2;
-        ll ele = countSubarraysWithAtMostKDistinct(v,mid);
-        // If mid is the median of the subarray then there must be atleast ceil(1.0*n/2) elements less equal than mid 
-        // So atleast ceil(1.0*n/2) elements in the uniqueness array must be <= mid
-        // That is, count of subarrays whose distinct element count <= mid. 
-        // And after this I'll get ans as True for all greater elements!
-        if(2*ele >= total){ 
-            r = mid-1;
+
+vector<bool> isArraySpecial(vector<int>& nums, vector<vector<int>>& queries) {
+    vector<ll> pref;
+    for(auto it:nums){
+        pref.push_back(it & 1);
+    }
+
+    vector<ll> tmp;
+    for(ll i = 0;i<pref.size();++i){
+        ll cntr = pref[i];
+        while((i+1)<pref.size()){
+            if((pref[i+1]^cntr) == 1){
+                cntr ^= 1;
+                ++i;
+            }else{break;}
+        }
+        tmp.push_back(i);
+    }
+
+    if(tmp.back() != (pref.size()-1)){
+        tmp.push_back(pref.size()-1);
+    }
+
+    vector<bool> ans;
+    for(auto it:queries){
+        ll x = it[0],y = it[1];
+        auto idx = lower_bound(all(tmp),x);
+        auto idx2 = lower_bound(all(tmp),y);
+
+        if(idx == (idx2)){
+            ans.push_back(true);
         }else{
-            l = mid+1;
-            ans = mid;
+            ans.push_back(false);
         }
     }
     return ans;
+}
+
+long long sumDigitDifferences(vector<int>& v) {
+    ll ans = 0,n = v.size();
+    vector<vector<ll>> dp(10,vector<ll>(10,0));
+    for(ll i = 0;i<n;++i){
+        string s = to_string(v[i]);
+        for(ll j = 0;j<s.size();++j){
+            dp[j][s[j]-'0']++;
+        }
+    }
+
+    for(ll i = 0;i<10;++i){
+        vector<ll> dk = dp[i];
+        ll sm = 0;
+        for(auto it:dk){
+            sm += it;
+        }
+        ll sa = 0;
+        for(auto it:dk){
+            ll other = sm-it;
+            sa += other*it;
+        }
+        ans += sa;
+    }
+    ans /= 2;
+    return ans;
+}
+
+ll k;
+ll powerr[40];
+void func(){
+    powerr[0] = 1;
+    for(ll i = 1;i<40;++i){
+        powerr[i] = 2*powerr[i-1];
+    }
+}
+
+vector<vector<vector<ll>>> dp;
+ll recur(ll i,ll f,ll jump,ll back){
+    if(i > (k+1)){return 0;}
+
+    ll &sa = dp[back][f][jump];
+    if(sa != -1){return sa;}
+    sa = 0;
+
+    // STILL WE CAN GET THE ANS
+    if(i == k){++sa;}
+
+    // Perform OP 1
+    if(!f){
+        sa += recur(i-1,1,jump,back+1);
+    }
+
+    // Perform OP 2 
+    sa += recur(i+powerr[jump],0,jump+1,back);
+    return sa;
+}
+
+int waysToReachStair(int z) {
+    k = 1ll*z;
+    func();
+    dp.assign(50,vector<vector<ll>> (3,vector<ll>(50,-1)));
+    return recur(1,0,0,0);
 }
 
 void solve(){

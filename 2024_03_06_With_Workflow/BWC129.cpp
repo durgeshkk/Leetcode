@@ -99,10 +99,8 @@ ll func(ll i,ll j,ll n,ll m,vector<vector<char>>& v){
         if(v[i][j+1] == 'B'){++sm;}
         if(v[i+1][j+1] == 'B'){++sm;}
         if(sm != 2){return 1;}
-    }else{
-        return 0;
     }
-    
+    return 0;    
 }
 bool canMakeSquare(vector<vector<char>>& grid) {
     ll n = 3,m = 3;
@@ -114,184 +112,123 @@ bool canMakeSquare(vector<vector<char>>& grid) {
     return false;
 }
 
-long long numberOfRightTriangles(vector<vector<int>>& v) {
-    ll n = v.size(),m = v[0].size(),ans = 0;
-    if(n == 1 || m == 1){return 0;}
-
-    if(n == 2){
-        forj(m){
-            if(v[1][j] and v[0][j]){
-                if(j-1 >= 0 and v[1][j-1]){
-                    ++ans;
-                }else if(j-1 < 0 and v[1][m-1]){
-                    ++ans;
-                }
-
-                if(j+1 <m and v[1][j+1]){
-                    ++ans;
-                }else if(j+1 <m and v[1][0]){
-                    ++ans;
-                }
-            }
-        }
-
-        forj(m){
-            if(v[0][j] and v[1][j]){
-                if(j-1 >= 0 and v[1][j-1]){
-                    ++ans;
-                }else if(j-1 < 0 and v[1][m-1]){
-                    ++ans;
-                }
-
-                if(j+1 <m and v[1][j+1]){
-                    ++ans;
-                }else if(j+1 <m and v[1][0]){
-                    ++ans;
-                }
-            }
-        }
-    }else if(m == 2){
-
-    }
-
-    for(ll i = 0;i<n;++i){
-        forj(m){
-            if(v[i][j]){
-
-                if(j+1<m and v[i][j+1]){
-                    if(i+1<n){
-                        if(v[i+1][j]){++ans;}
-                    }else{
-                        if(v[0][j]){++ans;}
-                    }
-
-                    if(i-1 >= 0){
-                        if(v[i-1][j]){++ans;}
-                    }else{
-                        if(v[n-1][j]){++ans;}
-                    }
-                }else if(j+1>m and v[i][0]){
-                    if(i+1<n){
-                        if(v[i+1][j]){++ans;}
-                    }else{
-                        if(v[0][j]){++ans;}
-                    }
-
-                    if(i-1 >= 0){
-                        if(v[i-1][j]){++ans;}
-                    }else{
-                        if(v[n-1][j]){++ans;}
-                    }
-                }
-                
-                if(j-1>=0 and v[i][j-1]){
-                    if(i+1<n){
-                        if(v[i+1][j]){++ans;}
-                    }else{
-                        if(v[0][j]){++ans;}
-                    }
-
-                    if(i-1 >= 0){
-                        if(v[i-1][j]){++ans;}
-                    }else{
-                        if(v[n-1][j]){++ans;}
-                    }
-                }else if(j-1<0 and v[i][m-1]){
-                    if(i+1<n){
-                        if(v[i+1][j]){++ans;}
-                    }else{
-                        if(v[0][j]){++ans;}
-                    }
-
-                    if(i-1 >= 0){
-                        if(v[i-1][j]){++ans;}
-                    }else{
-                        if(v[n-1][j]){++ans;}
-                    }
-                }
-
+long long numberOfRightTriangles(vector<vector<int>>& a) {
+    ll N = a.size();
+    ll M = a[0].size();
+ 
+        vector<ll> rows(N,0);
+        vector<ll> columns(M,0);
+ 
+    // Find the number of 1s in
+    // each of the rows[0, N - 1]
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < M; ++j) {
+ 
+            // Increment row[i]
+            if (a[i][j] == 1) {
+                rows[i]++;
             }
         }
     }
-    return ans;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-ll z,o,lim,n;
-vector<vector<ll>> dp;
-ll recur2(ll rem_zeroes,ll idx){
-    if(idx < n and !rem_zeroes){
-        if(n-idx > lim){return 0;}
-        return 1;
-    }
-
-    if(idx == n){return rem_zeroes == 0;}
-
-    ll &sa = dp[rem_zeroes][idx];
-    if(sa != -1){return sa;}
-    sa = 0;
-    for(ll i = idx;i<min(n,idx+lim+1);++i){
-        if(rem_zeroes){
-            sa += recur2(rem_zeroes-1,i+1);
+ 
+    // Find the number of 1s in
+    // each of the columns[0, N - 1]
+    for (int i = 0; i < M; ++i) {
+ 
+        for (int j = 0; j < N; ++j) {
+ 
+            // Increment columns[i]
+            if (a[j][i] == 1) {
+                columns[i]++;
+            }
         }
     }
-    return sa;
-}
+ 
+    // Stores the count of triangles
+    ll answer = 0;
+ 
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < M; ++j) {
+ 
+            // If current cell has value 1
+            if (a[i][j] == 1) {
+ 
+                // Update the answer
+                answer += (rows[i] - 1)
+                          * (columns[j] - 1);
+            }
+        }
+ 
+        
+    }
+   // Return the count
+        return answer;
+    }
 
-int numberOfStableArrays2(int zero, int one, int limit) {
-    z = zero,o = one,lim = limit,n = z+o;
-    dp.assign(z+1,vector<ll> (n+1,-1));
-    return recur2(zero,0);
-}
+// ll z,o,lim,n;
+// vector<vector<ll>> dp;
+// ll recur2(ll rem_zeroes,ll idx){
+//     if(idx < n and !rem_zeroes){
+//         if(n-idx > lim){return 0;}
+//         return 1;
+//     }
 
-ll recur(ll rem_zeroes,ll idx,vector<ll> x){
+//     if(idx == n){return rem_zeroes == 0;}
+
+//     ll &sa = dp[rem_zeroes][idx];
+//     if(sa != -1){return sa;}
+//     sa = 0;
+//     for(ll i = idx;i<min(n,idx+lim+1);++i){
+//         if(rem_zeroes){
+//             sa += recur2(rem_zeroes-1,i+1);
+//         }
+//     }
+//     return sa;
+// }
+
+// int numberOfStableArrays2(int zero, int one, int limit) {
+//     z = zero,o = one,lim = limit,n = z+o;
+//     dp.assign(z+1,vector<ll> (n+1,-1));
+//     return recur2(zero,0);
+// }
+
+// ll recur(ll rem_zeroes,ll idx,vector<ll> x){
     
-    if(idx <= n and !rem_zeroes){
-        if(n-idx > lim){return 1e10;}
-        cout<<"HI "<<idx<<"\n";
-        show(x);
-        return 1;
-    }else if(idx >= n){
-        return 1e10;
-    }
+//     if(idx <= n and !rem_zeroes){
+//         if(n-idx > lim){return 1e10;}
+//         cout<<"HI "<<idx<<"\n";
+//         show(x);
+//         return 1;
+//     }else if(idx >= n){
+//         return 1e10;
+//     }
     
-    // if(idx == n){return rem_zeroes == 0;}
+//     // if(idx == n){return rem_zeroes == 0;}
 
-    ll &sa = dp[rem_zeroes][idx];
-    if(sa != -1){return sa;}
-    sa = 0;
-    for(ll i = idx;i<min(n,idx+lim+1);++i){
-        if(rem_zeroes){
-            if(recur(rem_zeroes-1,i+1,x) < 1e10){
-                x.push_back(0);
-                sa += recur(rem_zeroes-1,i+1,x);
-            }
-        }
-        x.push_back(1);
-    }
-    return sa;
-}
+//     ll &sa = dp[rem_zeroes][idx];
+//     if(sa != -1){return sa;}
+//     sa = 0;
+//     for(ll i = idx;i<min(n,idx+lim+1);++i){
+//         if(rem_zeroes){
+//             if(recur(rem_zeroes-1,i+1,x) < 1e10){
+//                 x.push_back(0);
+//                 sa += recur(rem_zeroes-1,i+1,x);
+//             }
+//         }
+//         x.push_back(1);
+//     }
+//     return sa;
+// }
 
-int numberOfStableArrays(int zero, int one, int limit) {
-    z = zero,o = one,lim = limit,n = z+o;
-    dp.assign(z+1,vector<ll> (n+1,-1));
-    ll ans = recur(zero,0,{});
-    for(ll i = 0;i<=z;++i){
-        show(dp[i]);
-    }
-    return ans;
-}
+// int numberOfStableArrays(int zero, int one, int limit) {
+//     z = zero,o = one,lim = limit,n = z+o;
+//     dp.assign(z+1,vector<ll> (n+1,-1));
+//     ll ans = recur(zero,0,{});
+//     for(ll i = 0;i<=z;++i){
+//         show(dp[i]);
+//     }
+//     return ans;
+// }
 
 void solve(){
     ll n;cin>>n;

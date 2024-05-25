@@ -91,106 +91,113 @@ void tree(){
 
 //  "A" : 65, "a" : 97  (-> |) (<- &(~))
 // YE DIL MAANGE MORE!!
-int minimumAddedInteger(vector<int>& a, vector<int>& b) {
-    ll n=a.size(),m = n-2,ans = 10001;
-    sort(a.begin(),a.end());
-    sort(b.begin(),b.end());
-    for(ll i = 0;i<n;++i){
-        for(ll j = 0;j<n;++j){
-            if(i == j){continue;}
-            // Try removing i & j
-            vector<ll> v;
-            for(ll k = 0;k<n;++k){
-                if(k == i || k == j){continue;}
-                v.push_back(a[k]);
-            }
-
-            ll diff = 10001;
-            for(ll k = 0;k<m;++k){
-                if(diff == 10001){
-                    diff = v[k]-a[k];
-                }else{
-                    if(diff != (v[k]-a[k])){
-                        diff == 10001;break;
-                    }
-                }
-            }
-
-            ans = min(ans,diff);
-        }
-    }
-    return ans;
+ll isVowel(char c) {
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u' || c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U';
 }
 
-long long minEnd(int n, int x) {
-    n--;
-    if(!n){return x;}
-    bitset<64> a(x);
-    bitset<64> b(n);
-    ll j = 0;
-    for(ll i = 0;i<64;++i){
-        if(!a[i]){
-            if(b[j]){
-                a[i] = 1;++j;
-            }else{
-                ++j;
-            }
-        }
-    }
-
-    ll ans = -1,idx = -1,z = 0;
-
-    for(ll i = 0;i<64;++i){
-        if(a[i]){
-            ans += (1<<i);
-        }
-    }
-    return ans;
-}
-
-// Prerequisite : https://leetcode.com/problems/subarrays-with-k-different-integers/submissions/1217982826/
-ll countSubarraysWithAtMostKDistinct(vector<int>& nums, ll k){
-    ll n=nums.size();
-    unordered_map<ll, ll> mp;
-    ll i=0, j=0;
-    ll c=0;
+bool isValid(string word) {
+    ll n = word.size();
     
-/*
-    Subarray from [i,j] having unique elements = k, will have all the subarrays whose distinct
-    elements count will be <= k & will contribute to the answer for (uniqueness <= k)
-*/
-
-    while(j<n){
-        mp[nums[j]]++;
+    if(n < 3)
+        return false;
+    
+    ll vow = 0, consonant = 0, num = 0;
+    
+    for(auto i: word) {
+        if(isVowel(i))
+            vow++;
         
-        while(i<=j && mp.size()>k){
-            if(--mp[nums[i]] == 0) mp.erase(nums[i]);
-            i++;
-        }
-        c += (j-i+1);
-        j++;
+        else if(i >= 'a' && i <= 'z')
+            consonant++;
+        else if(i >= 'A' && i <= 'Z')
+            consonant++;
+        
+        else if(i >= '0' && i <= '9')
+            num++;
+        
+        else
+            return false;
     }
     
-    return c;
+    return (vow > 0 && consonant > 0);
 }
-int medianOfUniquenessArray(vector<int>& v) {
-    ll n = v.size();
-    ll l = 1,r = n,total = n*(n+1)/2,ans = 0;
-    while(l <= r){
-        ll mid = (l+r)/2;
-        ll ele = countSubarraysWithAtMostKDistinct(v,mid);
-        // If mid is the median of the subarray then there must be atleast ceil(1.0*n/2) elements less equal than mid 
-        // So atleast ceil(1.0*n/2) elements in the uniqueness array must be <= mid
-        // That is, count of subarrays whose distinct element count <= mid. 
-        // And after this I'll get ans as True for all greater elements!
-        if(2*ele >= total){ 
-            r = mid-1;
+
+int minimumOperationsToMakeKPeriodic(string s, int k) {
+    map<string,ll> mp;
+    string tmp;
+    for(ll i = 0;i<s.size();++i){
+        if(!(i%k)){
+            mp[tmp]++;
+            tmp.clear();
         }else{
-            l = mid+1;
-            ans = mid;
         }
+        tmp += s[i];
+    }
+    mp[tmp]++;
+    
+    ll freq = 0;
+    for(auto it:mp){
+        freq = max(freq,it.second);
+    }
+    ll n = s.size();
+    return (n/k)-freq;
+}
+
+int minAnagramLength(string s) {
+    map<char,ll> mp;
+    for(auto &it:s){
+        mp[it]++;
+    }
+    
+    ll g = 0;
+    for(auto &it:mp){
+        g = __gcd(it.second,g);
+    }
+    // cout<<gcd<<endl;
+    ll ans = 0;
+    for(auto &it:mp){
+        ans += it.second/g;
     }
     return ans;
+}
+
+ll solver(vector<ll> &v, ll sm, ll inc, ll c1, ll c2){ // v is diff array
+    // Total we need to club up to reach (mx+inc) that will be sm + (n*inc)
+    ll n = v.size();
+    ll needed = sm + (n*inc);
+    ll mx_reach = v[n-1]+inc;
+
+    ll sa = needed*c1;
+    // Consider the case when we need to increment only one index for all other indices like 
+    // INC ARRAY = {7,2,2,0}  => So, anytime we need to decrement this 7 we can only use 2+2 = 4 
+    // but for other 3 ops we need to use c1
+    ll other_than_last_ele = sm+(n)*inc-mx_reach;
+    ll sa2 = 0;
+    if(other_than_last_ele < mx_reach){
+        // Perform c2 ops :
+        sa2 += c2*(other_than_last_ele);
+        // Later perform c1 ops : 
+        sa2 += c1*(mx_reach-other_than_last_ele);
+    }else{
+        sa2 += (needed/2)*c2+(needed%2)*c1;
+    }
+    return min(sa,sa2); 
+}
+
+int minCostToEqualizeArray(vector<ll>& v, int c1, int c2) {
+    ll n = v.size(),mx = *max_element(all(v)),ans = 0;
+    sort(all(v));
+    vector<ll> diff;
+    for(auto it:v){diff.push_back(mx-it);}
+
+    sort(all(diff));
+    ll sm = accumulate(all(diff),0ll);
+
+    ans = solver(diff,sm,0,c1,c2);
+    for(ll inc = 1;inc <= 1e6;++inc){
+        ans = min(ans,solver(diff,sm,inc,c1,c2));
+    }
+    return (ans%mod);
 }
 
 void solve(){
