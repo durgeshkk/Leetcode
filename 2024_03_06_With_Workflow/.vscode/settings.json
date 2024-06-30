@@ -2,6 +2,8 @@
     "files.associations": {
         "numeric": "cpp",
         "random": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "iostream": "cpp",
+        "cstdint": "cpp"
     }
 }
