@@ -172,30 +172,27 @@ int numberOfAlternatingGroups(vector<int>& v, int k) {
     return ans;
 }
 
-long long countSubarrays(vector<int>& v, int k) {
-    long long ans = 0;
-    int n = v.size();
-    map<int, int> p;
-
-    for (int i = 0; i < n; ++i){
-        int c = v[i];
-        map<int, int> newp;
-        for (auto& pair : p) 
-        {
-            int newAND = pair.first & v[i];
-            newp[newAND] += pair.second;
-        }
-        newp[c]++;
-    
-        for (auto& pair : newp) {
-            if (pair.first == k) {
-                ans += pair.second;
-            }
-        }
-        p = newp;
+ll countSubarrays(vector<int>& v, int k) {
+    map<ll,ll> dp;
+    long long ans=0ll;
+    for(auto ele : v)
+    {
+        map<ll,ll> ndp;
+        ndp[ele]=1ll;
+        for(auto &[val,freq] : dp)
+            ndp[(val&ele)]+=freq;
+        
+        swap(ndp,dp);
+        // cout<<"---\n";
+        // for(auto it:dp){
+        //     cout<<it.first<<" "<<it.second<<endl;
+        // }
+        // cout<<"---\n";
+        
+        if(dp.find(k)!=dp.end())
+            ans=ans+dp[k];
     }
     return ans;
-
 }
 
 void solve(){
