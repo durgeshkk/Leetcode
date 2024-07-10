@@ -123,10 +123,6 @@ vector<string> validStrings(int n) {
     return ans;
 }
 
-bool dfs(){
-    
-}
-
 int numberOfSubmatrices(vector<vector<char>>& v) {
     ll n = v.size(),m = v[0].size();
 
@@ -204,6 +200,52 @@ long long compute_hash(string const& s) {
 */
 
 // None of below solutions worked : Try for Trie!
+struct Trie
+{
+    map<char,Trie*> nxt;
+    ll cst;
+    Trie(){
+        cst = 1e10;
+    }
+};
+
+void insert(Trie* root,string &key,ll val){
+    for(auto ch:key){
+        if(!root->nxt[ch]){
+            root->nxt[ch] = new Trie();
+        }
+        root = root->nxt[ch];
+    }
+    root->cst = min(root->cst,val);
+}
+
+int minimumCost(string t, vector<string>& v, vector<int>& csts) {
+    Trie *root = new Trie();
+    ll n = csts.size();
+    
+    vector<ll> dp(t.size() + 1, 1e10);
+    dp[t.size()] = 0;
+    for(ll i=0; i<n; i++){
+        insert(root, v[i], csts[i]);
+    }
+
+    for(ll i = t.size()-1; i>=0; i--){
+        ll ans = 1e10;
+        Trie* tmp = root;
+        for(ll j = i ; j < t.size() && tmp ; j++){
+            
+            tmp = tmp->nxt[t[j]];
+            if(tmp && (tmp->cst != 1e10)){
+                ans = min(ans,tmp->cst+dp[j+1]);
+            }
+        }
+        dp[i] = ans;
+    }
+
+    if(dp[0] >= 1e10){dp[0] = -1;}
+    return dp[0];
+}
+
 /*
 int minimumCost(string t, vector<string>& v, vector<int>& cst) {
 
@@ -245,7 +287,7 @@ int minimumCost(string t, vector<string>& v, vector<int>& cst) {
 
 int minimumCost(string t, vector<string>& v, vector<int>& cst) {
     int n = t.size();
-    vector<int> dp(n + 1, INT_MAX);
+    vector<int> dp(n + 1, 1e10);
     dp[0] = 0;
 
     
@@ -266,7 +308,7 @@ int minimumCost(string t, vector<string>& v, vector<int>& cst) {
 
 
     for (ll j = 0; j < n; ++j) {
-        if (dp[j] == INT_MAX) continue; 
+        if (dp[j] == 1e10) continue; 
 
         for (ll length = 1; j + length <= n; ++length) {
 
@@ -276,16 +318,16 @@ int minimumCost(string t, vector<string>& v, vector<int>& cst) {
             }
 
             if (strHa.find(curr) != strHa.end()) {
-                for (auto& [len, cost] : strHa[curr]) {
-                    if ((len == length) && (dp[j+length]> (dp[j]+cost))) {
-                        dp[j + length] = dp[j] + cost;
+                for (auto& [len, cst] : strHa[curr]) {
+                    if ((len == length) && (dp[j+length]> (dp[j]+cst))) {
+                        dp[j + length] = dp[j] + cst;
                     }
                 }
             }
         }
     }
 
-    if(dp[n] != INT_MAX){
+    if(dp[n] != 1e10){
         return dp[n];
     }
     return -1;
