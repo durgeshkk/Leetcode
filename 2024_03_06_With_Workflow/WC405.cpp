@@ -177,7 +177,6 @@ int numberOfSubmatrices(vector<vector<char>>& v) {
     return ans;
 }
 
-const ll mod = (ll)(1e9 + 7);
 const int best = 31;
 
 long long compute_hash(string const& s) {

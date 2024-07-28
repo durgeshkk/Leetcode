@@ -137,7 +137,8 @@ int minimumArea(vector<vector<int>>& v) {
     return (x6-x5)*(y6-y5);
 }
 
-ll n;vector<ll> v;
+ll n;
+vector<ll> v;
 vector<vector<ll>> dp;
 
 ll recur(ll idx,ll f){
@@ -146,48 +147,23 @@ ll recur(ll idx,ll f){
     }
 
     ll &sa = dp[idx][f];
-    if(sa != -1){return sa;}
+    if(sa != -1e15){return sa;}
     // Split 
     ll sa1 = 0;
     if(f){
-        sa1 += recur(idx+1,0)-v[idx];
+        sa1 = recur(idx+1,0)-v[idx];
     }else{
-        sa1 += recur(idx+1,0)+v[idx];
+        sa1 = recur(idx+1,0)+v[idx];
     }
 
     // Continue
     ll sa2 = 0;
     if(f){
-        sa2 += recur(idx+1,f^1)-v[idx];
+        sa2 = recur(idx+1,f^1)-v[idx];
     }else{
-        sa2 += recur(idx+1,f^1)+v[idx];
+        sa2 = recur(idx+1,f^1)+v[idx];
     }
     return sa = max(sa1,sa2);
-}
-
-ll recur(ll i,ll f){
-    if(i == n){
-        return 0;
-    }
-
-    ll val = dp[i][f];
-    if(dp[i][f] == -1){return dp[i][f];}
-
-    if(val != -1e12){return val;}
-
-    ll a = 0,b = 0;
-    if(f){
-        a = -v[i]+recur(i+1,0);
-    }else{
-        a = v[i]+recur(i+1,0);
-    }
-
-    if(f){
-        b = -v[i]+recur(i+1,0);
-    }else{
-        b = v[i]+recur(i+1,1);
-    }
-    return dp[i][f] = max(a,b);
 }
 
 long long maximumTotalCost(vector<int>& nums) {
@@ -199,7 +175,7 @@ long long maximumTotalCost(vector<int>& nums) {
     return recur(0,0);
 }
 
-ll n,m;
+ll nx,m;
 vector<vector<ll>> tmp;
 ll recur(ll i,ll j,ll x,ll y,ll f1,ll f2,ll f3){
     if(i == n and j == m){
@@ -275,7 +251,7 @@ ll recur(ll i,ll j,ll x,ll y,ll f1,ll f2,ll f3){
 }
 
 int minimumSum(vector<vector<int>>& grid) {
-        
+    return 0;
 }
 
 void solve(){

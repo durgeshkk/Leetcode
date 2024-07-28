@@ -393,80 +393,80 @@ vector<int> countOfPeaks(vector<int>& nums, vector<vector<int>>& queries) {
     return results;
 }
 
-vector<int> countOfPeaks2(vector<int>& v, vector<vector<int>>& queries) {
-    int *BITTree1, *BITTree2;
-    ll n = v.size();
-    // BIT1 to get element at any index
-    // in the array
-    BITTree1 = constructBITree(n);
+// vector<int> countOfPeaks2(vector<int>& v, vector<vector<int>>& queries) {
+//     int *BITTree1, *BITTree2;
+//     ll n = v.size();
+//     // BIT1 to get element at any index
+//     // in the array
+//     BITTree1 = constructBITree(n);
  
-    // BIT 2 maintains the extra term
-    // which needs to be subtracted
-    BITTree2 = constructBITree(n);
-    vector<ll> pref(n);
-    for(ll i = 0;i<n;++i){
-        if(i == 0){
-            pref[i] = 0;
-        }else if(i==(n-1)){
-            pref[i] = pref[i-1];
-        }else{
-            pref[i] += pref[i-1];
-            if(v[i] > v[i-1] and v[i] > v[i+1]){++pref[i];}
-        }
-    }
+//     // BIT 2 maintains the extra term
+//     // which needs to be subtracted
+//     BITTree2 = constructBITree(n);
+//     vector<ll> pref(n);
+//     for(ll i = 0;i<n;++i){
+//         if(i == 0){
+//             pref[i] = 0;
+//         }else if(i==(n-1)){
+//             pref[i] = pref[i-1];
+//         }else{
+//             pref[i] += pref[i-1];
+//             if(v[i] > v[i-1] and v[i] > v[i+1]){++pref[i];}
+//         }
+//     }
 
-    for(auto it:queries){
-        ll l = it[1],r = it[2];
-        if(it[0] == 1){
-            // Update Neighbours
-            // Left
-            if(((l>=1) and (l<n-1)) and v[l-1] > v[l-2] and v[l-1]>v[l]){
-                updateRange(BITTree1,BITTree2,n,-1,l-1,n-1);
-            }
-            if(((l>=1) and (l<n-1)) and v[l-1] > v[l-2] and v[l-1]>r){
-                updateRange(BITTree1,BITTree2,n,1,l-1,n-1);
-            }
+//     for(auto it:queries){
+//         ll l = it[1],r = it[2];
+//         if(it[0] == 1){
+//             // Update Neighbours
+//             // Left
+//             if(((l>=1) and (l<n-1)) and v[l-1] > v[l-2] and v[l-1]>v[l]){
+//                 updateRange(BITTree1,BITTree2,n,-1,l-1,n-1);
+//             }
+//             if(((l>=1) and (l<n-1)) and v[l-1] > v[l-2] and v[l-1]>r){
+//                 updateRange(BITTree1,BITTree2,n,1,l-1,n-1);
+//             }
 
-            // Right
-            if(((l) and ((l)<n-2)) and v[l+1] > v[l] and v[l+1]>v[l+2]){
-                updateRange(BITTree1,BITTree2,n,-1,l+1,n-1);
-            }
-            if(((l) and ((l)<n-2)) and v[l+1] > r and v[l+1]>v[l+2]){
-                updateRange(BITTree1,BITTree2,n,1,l+1,n-1);
-            }
+//             // Right
+//             if(((l) and ((l)<n-2)) and v[l+1] > v[l] and v[l+1]>v[l+2]){
+//                 updateRange(BITTree1,BITTree2,n,-1,l+1,n-1);
+//             }
+//             if(((l) and ((l)<n-2)) and v[l+1] > r and v[l+1]>v[l+2]){
+//                 updateRange(BITTree1,BITTree2,n,1,l+1,n-1);
+//             }
 
-            if(((l) and (l<n-1)) and v[l] > v[l-1] and v[l]>v[l+1]){
-                updateRange(BITTree1,BITTree2,n,-1,l,n-1);
-            }
-            v[l] = r;
-            if(((l) and (l<n-1)) and v[l] > v[l-1] and v[l]>v[l+1]){
-                updateRange(BITTree1,BITTree2,n,1,l,n-1);
-            }
-        }else{
+//             if(((l) and (l<n-1)) and v[l] > v[l-1] and v[l]>v[l+1]){
+//                 updateRange(BITTree1,BITTree2,n,-1,l,n-1);
+//             }
+//             v[l] = r;
+//             if(((l) and (l<n-1)) and v[l] > v[l-1] and v[l]>v[l+1]){
+//                 updateRange(BITTree1,BITTree2,n,1,l,n-1);
+//             }
+//         }else{
 
-        }
-    }
+//         }
+//     }
 
 
-    // Add 5 to all the elements from [0,4]
-    int l = 0, r = 4, val = 5;
-    updateRange(BITTree1, BITTree2, n, val, l, r);
-    vector<int> ans;
+//     // Add 5 to all the elements from [0,4]
+//     int l = 0, r = 4, val = 5;
+//     updateRange(BITTree1, BITTree2, n, val, l, r);
+//     vector<int> ans;
 
-    for (const auto& query : queries) {
-        if (query[0] == 1) {
-            int l = query[1];
-            int r = query[2];
-            ans.push_back(st.query(l, r));
-        } else if (query[0] == 2) {
-            int idx = query[1];
-            int val = query[2];
-            st.update(idx, val);
-        }
-    }
+//     for (const auto& query : queries) {
+//         if (query[0] == 1) {
+//             int l = query[1];
+//             int r = query[2];
+//             ans.push_back(st.query(l, r));
+//         } else if (query[0] == 2) {
+//             int idx = query[1];
+//             int val = query[2];
+//             st.update(idx, val);
+//         }
+//     }
 
-    return ans;
-}
+//     return ans;
+// }
 
 void solve(){
     ll n;cin>>n;
