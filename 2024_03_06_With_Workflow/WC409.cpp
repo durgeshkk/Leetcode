@@ -148,7 +148,7 @@ public:
 
 set<ll> adj[1001];
 vector<ll> vis;
-int n;
+ll n;
 
 vector<int> shortestDistanceAfterQueries(int m, vector<vector<int>>& queries) {
     n = m;
@@ -164,7 +164,7 @@ vector<int> shortestDistanceAfterQueries(int m, vector<vector<int>>& queries) {
         vector<ll> dist(n+1, 5001);
         dist[0] = 0;
         queue<int> q;
-        q.push(0);
+       ll n; q.push(0);
 
         while (!q.empty()) {
             int node = q.front();
@@ -184,7 +184,7 @@ vector<int> shortestDistanceAfterQueries(int m, vector<vector<int>>& queries) {
     return ans;
 }
 
-ll n;
+
 ll removeRangeExclusive(set<ll>& s, int start, int end) {
     ll dk = 0;
     auto it = s.upper_bound(start);
