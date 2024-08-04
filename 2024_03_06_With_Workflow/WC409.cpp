@@ -194,7 +194,7 @@ ll removeRangeExclusive(set<ll>& s, int start, int end) {
     return dk;
 }
 
-vector<int> shortestDistanceAfterQueries(int m, vector<vector<int>>& queries) {
+vector<int> shortestDistanceAfterQueries2(int m, vector<vector<int>>& queries) {
     vector<int> ans;
     map<ll,ll> mp;
     n = 1ll*m;
