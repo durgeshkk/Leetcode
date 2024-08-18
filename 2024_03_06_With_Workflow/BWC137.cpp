@@ -93,7 +93,7 @@ void tree(){
 
 //  "A" : 65, "a" : 97  (-> |) (<- &(~))
 // YE DIL MAANGE MORE!!
-
+// A & B
 vector<int> resultsArray(vector<int>& nums, int k) {
     vector<int> ans;
     set<int> s;
@@ -143,70 +143,7 @@ vector<int> resultsArray(vector<int>& nums, int k) {
     return ans;
 }
 
-// Rook exists in row 'i'
-ll n,m;
-vector<vector<ll>> v;
-vector<vector<vector<ll>>> dp;
 
-ll recur(int i,int f,int s,bool cnt){
-    // Base Condition
-    if(cnt){return 0;}
-
-    if(i == (n)){
-        if(cnt){return 0;}
-        return -1e10;
-    }
-
-
-    // Rook Exists in row 'i'
-    ll &sa = dp[i][f][s];
-    if(sa > -1e10){return sa;}
-    sa = -1e10;
-    for(ll k = 1;k<=m;++k){
-        if((f == k) || (s == k) || (cnt)){
-            continue;
-        }
-
-        ll x = v[i][k];
-        if(!f){
-            sa = max(sa,x+recur(i+1,k,s,false));
-        }else if(!s){
-            sa = max(sa,x+recur(i+1,f,k,false));
-        }else{
-            sa = max(sa,x+recur(i+1,f,k,true));
-        }
-    }
-
-    // Rook DNE in row 'i' 
-    ll rem = n-i-1;
-    if(!cnt){
-        if(f == 0){
-            if(rem <= 2){
-                return -1e10;
-            }
-        }else if(s == 0){
-            if(rem <= 1){
-                return -1e10;
-            }
-        }
-    }
-    sa = max(sa,recur(i+1,f,s,cnt));
-    return sa;
-}
-
-long long maximumValueSum(vector<vector<int>>& board) {
-    n = board.size(),m = board[0].size();
-    v.assign(n+1,vector<ll> (m+1,0));
-    dp.assign(n+1,vector<vector<ll>> (m+1,vector<ll> (m+1,-1e10)));
-
-    for(ll i = 0;i<n;++i){
-        for(ll j =0;j<m;++j){
-            v[i][j+1] = board[i][j];
-        }
-    }
-
-    return recur(0,0,0,false);
-}
 
 void solve(){
     ll n;cin>>n;
