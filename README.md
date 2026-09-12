@@ -9,7 +9,7 @@ Solutions organised by pattern rather than by problem number, because the patter
 
 **Rating:** Guardian — 2267 (top 1% worldwide)
 
-**Languages:** C++ and Java
+**Languages:** C++
 
 ---
 
